@@ -2,18 +2,17 @@ let handpose;
 let video;
 let pg;
 let hands = [];
-const resolution = 800;
 
 function preload() {
   handpose = ml5.handPose();
 }
 
 function setup() {
-  createCanvas(2 * resolution, resolution);
+  createCanvas(innerWidth, innerHeight);
   background(255);
 
   video = createCapture(VIDEO);
-  video.size(resolution, resolution);
+  video.size(innerWidth, innerHeight);
   video.hide();
 
   frameRate(60);
@@ -23,9 +22,9 @@ function setup() {
 
 function draw() {
   // Flips the camera and draws a photo of it
-  translate(resolution, 0);
+  translate(innerWidth, 0);
   scale(-1, 1);
-  image(video, -resolution, 0, resolution, resolution);
+  //image(video, -resolution, 0, resolution, resolution);
 
   // Clear and create an overlay on the canvas.
   // Creates a circle between the size of the distance between the index finger and thumb
@@ -68,12 +67,12 @@ function getHandsData(results) {
 // On a seperate p5 instance and canvas so it doesnt interfere with the drawing.
 let overlay = function (overlay) {
   overlay.setup = function () {
-    let graphicCanvas = overlay.createCanvas(resolution, resolution);
+    let graphicCanvas = overlay.createCanvas(innerWidth, innerHeight);
     graphicCanvas.position(0, 0);
   }
   overlay.draw = function () {
     overlay.clear();
-    overlay.translate(resolution, 0);
+    overlay.translate(innerWidth, 0);
     overlay.scale(-1, 1);
 
     for (let hand of hands) {
