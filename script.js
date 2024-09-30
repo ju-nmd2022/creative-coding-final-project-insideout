@@ -4,7 +4,7 @@ let hands = [];
 let loading;
 
 function preload() {
-  handpose = ml5.handPose();
+  handpose = ml5.handPose(modelReady);
   loading = true;
 }
 
@@ -18,10 +18,6 @@ function setup() {
   video.hide();
 
   handpose.detectStart(video, getHandsData);
-
-  setTimeout(() => {
-    loading = false;
-  }, 7000);
 }
 
 function draw() {
@@ -36,11 +32,12 @@ function draw() {
     let index = hands[0].index_finger_tip;
     let thumb = hands[0].thumb_tip;
 
-    if (dist(middle.x, middle.y, thumb.x, thumb.y) < 70) {
+    if (dist(middle.x, middle.y, thumb.x, thumb.y) < 100) {
       let centerX = (index.x + thumb.x) / 2;
       let centerY = (index.y + thumb.y) / 2;
 
-      let distance = dist(index.x, index.y, thumb.x, thumb.y);
+      //let distance = dist(index.x, index.y, thumb.x, thumb.y);
+      let distance = 100;
 
       noStroke();
       fill("blue");
@@ -51,6 +48,10 @@ function draw() {
 
 function getHandsData(results) {
   hands = results;
+}
+
+function modelReady() {
+  loading = false;
 }
 
 // "Cursor" overlay on the canvas.
