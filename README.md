@@ -1,11 +1,14 @@
-!! Notes from Klara
+# Title
 
-Install yarn on your laptop - npm install --global yarn
-Type npm install
-When you try to run the code using yarn start, there can be some problems with your npm version. Use then - nvm install 16 and nvm use 16
-Ensure first that you have nvm installed
-Then type - yarn start
-You can see some warning and vulnerabilities in the terminal, as long as the code works don't worry about them. The code has 4 years and many packages are deprecated
+description
+
+Setup in loval env
+
+1. Install yarn and nvm
+2. Change react version to 16 - use command: nvm use 16
+3. Install dependencies. Use: npm install
+4. Run: yarn start
+5. Further instructions are provided by the author of the base code (hand pose detection author)
 
 ---> Here are instructions from the author
 
@@ -77,4 +80,5 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 ### `yarn build` fails to minify
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+
 # hand-and-face-detection
