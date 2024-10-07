@@ -7,6 +7,9 @@ function setup() {
     // Idk if we need this but ¯\_(ツ)_/¯
     brush.load();
 
+    // For performance, DONT REMOVE!!!!
+    brush.reDraw();
+
     // Start/Default emotion
     happy();
 
@@ -44,7 +47,4 @@ function draw() {
     if (mouseIsPressed) {
         drawing();
     }
-
-    // For performance, DONT REMOVE!!!!
-    brush.reDraw();
 }
