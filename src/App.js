@@ -9,6 +9,9 @@ import * as faceapi from "face-api.js";
 import Webcam from "react-webcam";
 import "./App.css";
 import { drawHand } from "./utilities";
+//import p5 from 'p5';
+import Sketch from "react-p5";
+import * as brush from 'p5.brush';
 
 function App() {
   const webcamRef = useRef(null);
@@ -37,6 +40,34 @@ function App() {
     ctx.lineJoin = "round"; // Smooth line joins
   };
 
+  const setup = (p5, canvasParentRef) => {
+    p5.createCanvas(800, 800, p5.WEBGL).parent(canvasParentRef);
+    p5.background("#fffceb");
+
+    brush.instance(p5);
+    brush.load();
+    brush.reDraw();
+
+    // Unchanged brush settings
+    brush.noHatch();
+    brush.noField();
+    brush.noStroke();
+  }
+
+  const draw = (p5) => {
+    if (p5.mouseIsPressed) {
+      // 0, 0 is the center of the canvas, so we calculate the x and y
+      let x = p5.mouseX - (p5.width / 2);
+      let y = p5.mouseY - (p5.height / 2);
+
+      // Randomness :)
+      brush.bleed(p5.random(0.05, 0.4));
+      brush.fillTexture(0.55, 0.5);
+      brush.fill("#002185", p5.random(80, 140));
+      brush.rect(x, y, 100, 100);
+    }
+  }
+
   const runDetection = async () => {
     const handposeNet = await handpose.load();
     console.log("Handpose model loaded.");
@@ -49,7 +80,7 @@ function App() {
 
     setInterval(() => {
       detect(handposeNet);
-    }, 16); // Increased frame rate to ~60fps for smoother detection
+    }, 60); // Increased frame rate to ~60fps for smoother detection
   };
 
   // Smoothing function for positions
@@ -109,7 +140,7 @@ function App() {
   const calculateFingerDistance = (finger1, finger2) => {
     return Math.sqrt(
       Math.pow(finger1[0] - finger2[0], 2) +
-        Math.pow(finger1[1] - finger2[1], 2)
+      Math.pow(finger1[1] - finger2[1], 2)
     );
   };
 
@@ -281,6 +312,8 @@ function App() {
             opacity: 0.5,
           }}
         />
+
+        <Sketch setup={setup} draw={draw} />
       </header>
     </div>
   );
