@@ -1822,6 +1822,11 @@
   resolved "https://registry.npmjs.org/@types/offscreencanvas/-/offscreencanvas-2019.3.0.tgz"
   integrity sha512-esIJx9bQg+QYF0ra8GnvfianIY8qWB0GBx54PK5Eps6m+xTj86KLavHv6qDhzKcu5UUOgNfJ2pWaIIV7TRUd9Q==
 
+"@types/p5@1.7.0":
+  version "1.7.0"
+  resolved "https://registry.npmjs.org/@types/p5/-/p5-1.7.0.tgz"
+  integrity sha512-6AnjmW98/edgXB+pYDBx7t6QbCogIG6NUzey93JpGTZA4096C+KjSN8y0sj43QRd9XtblrAhoRXHj1pFZ2vsCg==
+
 "@types/parse-json@^4.0.0":
   version "4.0.0"
   resolved "https://registry.npmjs.org/@types/parse-json/-/parse-json-4.0.0.tgz"
@@ -4628,6 +4633,11 @@ eslint@*, "eslint@^3 || ^4 || ^5 || ^6", "eslint@^3.0.0 || ^4.0.0 || ^5.0.0 || ^
     table "^5.2.3"
     text-table "^0.2.0"
     v8-compile-cache "^2.0.3"
+
+esm-seedrandom@^3.0.5:
+  version "3.0.5"
+  resolved "https://registry.npmjs.org/esm-seedrandom/-/esm-seedrandom-3.0.5.tgz"
+  integrity sha512-pMAq0mFIr5JQ3Ihbng7EBLMJ+llMbaDKkiG44pqbSXS0NIZWtEANpOpxb5s6Q8Q2R562P26qMHPv8YtP/NHh9g==
 
 espree@^6.1.2:
   version "6.2.1"
@@ -7808,6 +7818,11 @@ open@^7.0.2, open@^7.4.2:
     is-docker "^2.0.0"
     is-wsl "^2.1.1"
 
+opencollective-postinstall@2.0.2:
+  version "2.0.2"
+  resolved "https://registry.npmjs.org/opencollective-postinstall/-/opencollective-postinstall-2.0.2.tgz"
+  integrity sha512-pVOEP16TrAO2/fjej1IdOyupJY8KDUM1CvsaScRbw6oddvpQoOfGk4ywha0HKKVAD6RkW4x6Q+tNBwhf3Bgpuw==
+
 opn@^5.5.0:
   version "5.5.0"
   resolved "https://registry.npmjs.org/opn/-/opn-5.5.0.tgz"
@@ -7933,10 +7948,22 @@ p-try@^2.0.0:
   resolved "https://registry.npmjs.org/p-try/-/p-try-2.2.0.tgz"
   integrity sha512-R4nPAVTAU0B9D35/Gk3uJf/7XYbQcyohSKdvAxIRSNghFl4e71hVoGnBNQz9cWaXxO2I10KTC+3jMdvvoKw6dQ==
 
-p5@^1.11.0, p5@^1.6.0:
+p5.brush@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.npmjs.org/p5.brush/-/p5.brush-1.1.2.tgz"
+  integrity sha512-odDgTY8+KkvtVEV95YT16VY976kJguAgsbpHsXdwkaLUUEXsiWwe51mRcvRvDYriaQ9BCSIxIHey321qKtm93Q==
+  dependencies:
+    esm-seedrandom "^3.0.5"
+
+p5@^1.11.0, p5@^1.6.0, p5@^1.9.0:
   version "1.11.0"
   resolved "https://registry.npmjs.org/p5/-/p5-1.11.0.tgz"
   integrity sha512-UgjQK88M+QUjsGpZgS5ZoyY8AH6Ilmjil/oxWXA7hroe1yXBG+nYKae+fpn8gga71kKyZHumL234BNZekaqAHg==
+
+p5@1.7.0:
+  version "1.7.0"
+  resolved "https://registry.npmjs.org/p5/-/p5-1.7.0.tgz"
+  integrity sha512-qrbT/44Dwm63ZtOKX/mp61pw+5yj6ijYLOmRv7p6zcfjbo83Vb0gVFEvW0kTLFu7hceWCig0HONo9F1bSlqbsQ==
 
 pako@~1.0.5:
   version "1.0.11"
@@ -9189,7 +9216,7 @@ react-dev-utils@^10.2.1:
     strip-ansi "6.0.0"
     text-table "0.2.0"
 
-react-dom@*, react-dom@^17.0.2, "react-dom@>= 17.0.2", react-dom@>=15.3.0:
+react-dom@*, react-dom@^17.0.2, "react-dom@>= 17.0.1", "react-dom@>= 17.0.2", react-dom@>=15.3.0:
   version "17.0.2"
   resolved "https://registry.npmjs.org/react-dom/-/react-dom-17.0.2.tgz"
   integrity sha512-s4h96KtLDUQlsENhMn1ar8t2bEa+q/YAtj8pPPdIjPDGBDIVNsrD9aXNWqspUe6AzKCIG0C1HZZLqLV7qpOBGA==
@@ -9215,6 +9242,15 @@ react-p5-wrapper@^4.1.2:
   dependencies:
     microdiff "^1.3.2"
     p5 "^1.6.0"
+
+react-p5@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.npmjs.org/react-p5/-/react-p5-1.4.1.tgz"
+  integrity sha512-njeL8zskkbo8gK3ql1u4/MgmecT/g7Z7LvypTn65DWUnuBvV/9S5AowcKkwQuLVo8/DDAE5vgGVFq1DOkoWiJA==
+  dependencies:
+    "@types/p5" "1.7.0"
+    opencollective-postinstall "2.0.2"
+    p5 "1.7.0"
 
 react-scripts@3.4.3:
   version "3.4.3"
@@ -9281,7 +9317,7 @@ react-webcam@^5.2.0:
   resolved "https://registry.npmjs.org/react-webcam/-/react-webcam-5.2.0.tgz"
   integrity sha512-mz/ehO/iTpnU6RcJgGRg1vjLh+ydm0jfJb84Fwws4YrXYf2IjrZlOn9eZ/Iu+/EJeKf8SlZEnu3G8Pz7atRN8w==
 
-react@*, react@^17.0.2, "react@>= 17.0.2", react@>=15.3.0, react@17.0.2:
+react@*, react@^17.0.2, "react@>= 17.0.1", "react@>= 17.0.2", react@>=15.3.0, react@17.0.2:
   version "17.0.2"
   resolved "https://registry.npmjs.org/react/-/react-17.0.2.tgz"
   integrity sha512-gnhPt75i/dq/z3/6q/0asP78D0u592D5L1pd7M8P+dck6Fu/jJeL6iVVK23fptSUZj8Vjf++7wXA8UNclGQcbA==
