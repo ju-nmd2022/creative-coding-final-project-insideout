@@ -80,7 +80,6 @@ function App() {
     }, 60);
   };
 
-  // Helper function to calculate distance between two 3D points
   const calculate3DDistance = (point1, point2) => {
     return Math.sqrt(
       Math.pow(point1[0] - point2[0], 2) +
@@ -89,29 +88,23 @@ function App() {
     );
   };
 
-  // Function to detect if hand is making a fist
   const isHandFist = (landmarks) => {
-    // Get palm base point (landmark 0)
     const palmBase = landmarks[0];
 
-    // Get fingertip points (landmarks 4, 8, 12, 16, 20)
     const thumbTip = landmarks[4];
     const indexTip = landmarks[8];
     const middleTip = landmarks[12];
     const ringTip = landmarks[16];
     const pinkyTip = landmarks[20];
 
-    // Calculate distances from each fingertip to palm base
     const thumbDistance = calculate3DDistance(thumbTip, palmBase);
     const indexDistance = calculate3DDistance(indexTip, palmBase);
     const middleDistance = calculate3DDistance(middleTip, palmBase);
     const ringDistance = calculate3DDistance(ringTip, palmBase);
     const pinkyDistance = calculate3DDistance(pinkyTip, palmBase);
 
-    // Get palm width (distance between landmarks 5 and 17)
     const palmWidth = calculate3DDistance(landmarks[5], landmarks[17]);
 
-    // Calculate average finger distance
     const avgFingerDistance =
       (thumbDistance +
         indexDistance +
@@ -120,22 +113,19 @@ function App() {
         pinkyDistance) /
       5;
 
-    // A fist is detected when all fingertips are relatively close to the palm base
-    const threshold = palmWidth * 1.2; // Adjust this multiplier to make detection more or less sensitive
+    const threshold = palmWidth * 1.2;
 
     return avgFingerDistance < threshold;
   };
 
-  // Smoothing function for positions
   const smoothPosition = (newPos) => {
-    const bufferSize = 5; // Adjust this value to change smoothing amount
+    const bufferSize = 5;
     positionBuffer.current.push(newPos);
 
     if (positionBuffer.current.length > bufferSize) {
       positionBuffer.current.shift();
     }
 
-    // Calculate average position
     const avg = positionBuffer.current.reduce(
       (acc, pos) => ({
         x: acc.x + pos.x / positionBuffer.current.length,
@@ -179,6 +169,14 @@ function App() {
     });
   };
 
+  const drawPositionIndicator = (ctx, x, y) => {
+    ctx.beginPath();
+    ctx.arc(x, y, 8, 0, 2 * Math.PI); // Draw a circle with radius 8
+    ctx.fillStyle = "red";
+    ctx.fill();
+    ctx.closePath();
+  };
+
   const detect = async (handposeNet) => {
     frameCount.current += 1;
 
@@ -187,7 +185,6 @@ function App() {
       const videoWidth = video.videoWidth;
       const videoHeight = video.videoHeight;
 
-      // Set canvas dimensions
       canvasRef.current.width = videoWidth;
       canvasRef.current.height = videoHeight;
 
@@ -197,25 +194,27 @@ function App() {
       }
 
       const drawingCtx = drawingCanvasRef.current.getContext("2d");
-
-      // Hand detection
-      const hands = await handposeNet.estimateHands(video);
       const ctx = canvasRef.current.getContext("2d");
-      drawHand(hands, ctx);
+
+      const hands = await handposeNet.estimateHands(video);
+
+      // Clear the canvas before drawing new frame
+      ctx.clearRect(0, 0, videoWidth, videoHeight);
 
       if (hands.length > 0) {
         const hand = hands[0];
         const landmarks = hand.landmarks;
 
-        // Check if hand is making a fist
+        // Draw the position indicator regardless of whether it's a fist or not
+        const indexTip = landmarks[8];
+        drawPositionIndicator(ctx, indexTip[0], indexTip[1]);
+
         if (isHandFist(landmarks)) {
-          const indexTip = landmarks[8]; // Using index finger tip as drawing point
           const currentPos = {
             x: indexTip[0],
             y: indexTip[1],
           };
 
-          // Apply smoothing to the current position
           const smoothedPos = smoothPosition(currentPos);
 
           if (lastPos.current) {
@@ -231,18 +230,16 @@ function App() {
           lastPos.current = smoothedPos;
           setIsDrawing(true);
         } else {
-          // Only reset last position if we've been not drawing for a few frames
           if (isDrawing) {
             setTimeout(() => {
               lastPos.current = null;
               setIsDrawing(false);
-              positionBuffer.current = []; // Clear position buffer
+              positionBuffer.current = [];
             }, 100);
           }
         }
       }
 
-      // Face detection (reduced frequency to improve performance)
       if (frameCount.current % 3 === 0) {
         const detections = await faceapi
           .detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
@@ -261,19 +258,15 @@ function App() {
           height: videoHeight,
         });
 
-        const ctx = canvasRef.current.getContext("2d");
-        ctx.clearRect(0, 0, videoWidth, videoHeight);
-
-        // Set drawing color based on detected expressions
         if (detections.length > 0) {
           const expressions = detections[0].expressions;
 
           if (expressions.happy > 0.5) {
-            drawingCtx.strokeStyle = "yellow"; // Happy
+            drawingCtx.strokeStyle = "yellow";
           } else if (expressions.angry > 0.5) {
-            drawingCtx.strokeStyle = "red"; // Angry
+            drawingCtx.strokeStyle = "red";
           } else {
-            drawingCtx.strokeStyle = "blue"; // Default color
+            drawingCtx.strokeStyle = "blue";
           }
 
           console.log("Detected Expressions: ", expressions);
