@@ -22,6 +22,8 @@ function App() {
   const frameCount = useRef(0);
   const positionBuffer = useRef([]); // Buffer for position smoothing
 
+  let hands;
+
   // State to hold face detections
   const [faceDetections, setFaceDetections] = useState([]);
 
@@ -37,31 +39,6 @@ function App() {
     ctx.lineWidth = 4;
     ctx.lineCap = "round";
     ctx.lineJoin = "round"; // Smooth line joins
-  };
-
-  const setup = (p5, canvasParentRef) => {
-    p5.createCanvas(800, 800, p5.WEBGL).parent(canvasParentRef);
-    p5.background("#fffceb");
-
-    brush.instance(p5);
-    brush.load();
-    brush.reDraw();
-
-    brush.noHatch();
-    brush.noField();
-    brush.noStroke();
-  };
-
-  const draw = (p5) => {
-    if (p5.mouseIsPressed) {
-      let x = p5.mouseX - p5.width / 2;
-      let y = p5.mouseY - p5.height / 2;
-
-      brush.bleed(p5.random(0.05, 0.4));
-      brush.fillTexture(0.55, 0.5);
-      brush.fill("#002185", p5.random(80, 140));
-      brush.rect(x, y, 100, 100);
-    }
   };
 
   const runDetection = async () => {
@@ -83,8 +60,8 @@ function App() {
   const calculate3DDistance = (point1, point2) => {
     return Math.sqrt(
       Math.pow(point1[0] - point2[0], 2) +
-        Math.pow(point1[1] - point2[1], 2) +
-        Math.pow(point1[2] - point2[2], 2)
+      Math.pow(point1[1] - point2[1], 2) +
+      Math.pow(point1[2] - point2[2], 2)
     );
   };
 
@@ -196,10 +173,10 @@ function App() {
       const drawingCtx = drawingCanvasRef.current.getContext("2d");
       const ctx = canvasRef.current.getContext("2d");
 
-      const hands = await handposeNet.estimateHands(video);
+      hands = await handposeNet.estimateHands(video);
 
       // Clear the canvas before drawing new frame
-      ctx.clearRect(0, 0, videoWidth, videoHeight);
+      //ctx.clearRect(0, 0, videoWidth, videoHeight);
 
       if (hands.length > 0) {
         const hand = hands[0];
@@ -218,13 +195,13 @@ function App() {
           const smoothedPos = smoothPosition(currentPos);
 
           if (lastPos.current) {
-            drawLine(
-              drawingCtx,
-              lastPos.current.x,
-              lastPos.current.y,
-              smoothedPos.x,
-              smoothedPos.y
-            );
+            // drawLine(
+            //   drawingCtx,
+            //   lastPos.current.x,
+            //   lastPos.current.y,
+            //   smoothedPos.x,
+            //   smoothedPos.y
+            // );
           }
 
           lastPos.current = smoothedPos;
@@ -273,6 +250,93 @@ function App() {
         }
       }
     }
+  };
+
+  const setup = (p5, canvasParentRef) => {
+    p5.createCanvas(800, 800, p5.WEBGL).parent(canvasParentRef);
+    p5.background("#fffceb");
+
+    brush.instance(p5);
+    brush.load();
+    brush.reDraw();
+
+    // Brushes for each emotion
+    brush.add("happy", {
+      type: "custom",
+      weight: 5,
+      vibration: 0.08,
+      opacity: 23,
+      spacing: 0.6,
+      blend: true,
+      pressure: {
+        type: "standard",
+        min_max: [1.35, 1],
+        curve: [0.35, 0.25]
+      },
+      rotate: "natural",
+    })
+
+    brush.add("sad", {
+      type: "custom",
+      weight: 5,
+      vibration: 0.08,
+      opacity: 10,
+      spacing: 3,
+      blend: true,
+      pressure: {
+        type: "standard",
+        min_max: [1.35, 1],
+        curve: [0.35, 0.25]
+      },
+      rotate: "natural",
+    })
+
+    brush.add("angry", {
+      type: "custom",
+      weight: 10,
+      vibration: 0.5,
+      opacity: 28,
+      spacing: 1,
+      blend: true,
+      pressure: {
+        type: "standard",
+        min_max: [1.35, 1],
+        curve: [0.35, 0.25]
+      },
+      rotate: "natural",
+    })
+
+    brush.noHatch();
+    brush.noField();
+    brush.noStroke();
+  };
+
+  const draw = (p5) => {
+    // if (hands.length > 0) {
+    //   const hand = hands[0];
+    //   const landmarks = hand.landmarks;
+
+    //   if (isHandFist(landmarks)) {
+    //     let x = indexTip[0];
+    //     let y = indexTip[0];
+
+    //     brush.bleed(p5.random(0.05, 0.4));
+    //     brush.fillTexture(0.55, 0.5);
+    //     brush.fill("#002185", p5.random(80, 140));
+    //     brush.rect(x, y, 100, 100);
+    //   }
+
+    if (p5.mouseIsPressed) {
+      let x = p5.mouseX - p5.width / 2;
+      let y = p5.mouseY - p5.height / 2;
+
+      brush.bleed(p5.random(0.05, 0.4));
+      brush.fillTexture(0.55, 0.5);
+      brush.pick("happy");
+      brush.fill("#002185", p5.random(80, 140));
+      brush.rect(x, y, 100, 100);
+    }
+    // }
   };
 
   return (
