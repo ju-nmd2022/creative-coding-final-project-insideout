@@ -10,10 +10,62 @@ function setup() {
     // For performance, DONT REMOVE!!!!
     brush.reDraw();
 
-    // Start/Default emotion
-    happy();
+    // Brushes
+    brush.add("happy", {
+        type: "custom",
+        weight: 5,
+        vibration: 0.08,
+        opacity: 23,
+        spacing: 0.6,
+        blend: true,
+        pressure: {
+            type: "standard",
+            min_max: [1.35, 1],
+            curve: [0.35, 0.25]
+        },
+        tip: (_m) => {
+            _m.rotate(45), _m.rect(-1.5, -1.5, 3, 3), _m.rect(1, 1, 1, 1);
+        },
+        rotate: "natural",
+    })
 
-    // Unchanged brush settings
+    brush.add("sad", {
+        type: "custom",
+        weight: 5,
+        vibration: 0.08,
+        opacity: 10,
+        spacing: 3,
+        blend: true,
+        pressure: {
+            type: "standard",
+            min_max: [1.35, 1],
+            curve: [0.35, 0.25]
+        },
+        tip: (_m) => {
+            _m.rotate(45), _m.rect(-1.5, -1.5, 3, 3), _m.rect(1, 1, 1, 1);
+        },
+        rotate: "natural",
+    })
+
+    brush.add("angry", {
+        type: "custom",
+        weight: 10,
+        vibration: 0.5,
+        opacity: 28,
+        spacing: 1,
+        blend: true,
+        pressure: {
+            type: "standard",
+            min_max: [1.35, 1],
+            curve: [0.35, 0.25]
+        },
+        tip: (_m) => {
+            _m.rotate(45), _m.rect(-1.5, -1.5, 3, 3), _m.rect(1, 1, 1, 1);
+        },
+        rotate: "natural",
+    })
+
+    happy();
     brush.noHatch();
     brush.noField();
     brush.noStroke();
@@ -25,21 +77,24 @@ function drawing() {
     let y = mouseY - (height / 2);
 
     // Randomness :)
-    brush.bleed(random(0.05, 0.4));
-    brush.fillTexture(0.55, 0.5);
-    brush.fill(color, random(80, 140));
+    brush.bleed(0.3, "out");
+    brush.fillTexture(0.6, 0.4);
+    brush.fill(color, 80);
     brush.rect(x, y, 100, 100);
 }
 
 function happy() {
+    brush.pick("happy");
     color = "#ffba59";
 }
 
 function sad() {
+    brush.pick("sad");
     color = "#002185";
 }
 
 function angry() {
+    brush.pick("angry");
     color = "#9c1012";
 }
 

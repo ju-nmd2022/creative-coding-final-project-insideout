@@ -22,7 +22,10 @@ function App() {
   const frameCount = useRef(0);
   const positionBuffer = useRef([]); // Buffer for position smoothing
 
-  let hands;
+  let handposeNet = useRef(null);
+  let detections = useRef(null);
+  let handsloaded = false;
+  let color = "#ffba59"; // happy default
 
   // State to hold face detections
   const [faceDetections, setFaceDetections] = useState([]);
@@ -42,9 +45,9 @@ function App() {
   };
 
   const runDetection = async () => {
-    const handposeNet = await handpose.load();
-    console.log("Handpose model loaded.");
-    console.log("HandposeNet:", handposeNet);
+    // handposeNet = await handpose.load();
+    // console.log("Handpose model loaded.");
+    // console.log("HandposeNet:", handposeNet);
 
     await faceapi.nets.tinyFaceDetector.loadFromUri("/models");
     await faceapi.nets.faceLandmark68Net.loadFromUri("/models");
@@ -52,9 +55,9 @@ function App() {
 
     console.log("Face API models loaded.");
 
-    setInterval(() => {
-      detect(handposeNet);
-    }, 60);
+    // setInterval(() => {
+    //   detect(handposeNet);
+    // }, 60);
   };
 
   const calculate3DDistance = (point1, point2) => {
@@ -91,6 +94,8 @@ function App() {
       5;
 
     const threshold = palmWidth * 1.2;
+
+    console.log("threshold reached!") // for testing
 
     return avgFingerDistance < threshold;
   };
@@ -173,86 +178,94 @@ function App() {
       const drawingCtx = drawingCanvasRef.current.getContext("2d");
       const ctx = canvasRef.current.getContext("2d");
 
-      hands = await handposeNet.estimateHands(video);
+      // hands = await handposeNet.estimateHands(video);
 
       // Clear the canvas before drawing new frame
       //ctx.clearRect(0, 0, videoWidth, videoHeight);
 
-      if (hands.length > 0) {
-        const hand = hands[0];
-        const landmarks = hand.landmarks;
+      // if (hands.length > 0) {
+      //   const hand = hands[0];
+      //   const landmarks = hand.landmarks;
 
-        // Draw the position indicator regardless of whether it's a fist or not
-        const indexTip = landmarks[8];
-        drawPositionIndicator(ctx, indexTip[0], indexTip[1]);
+      //   // Draw the position indicator regardless of whether it's a fist or not
+      //   const indexTip = landmarks[8];
+      //   drawPositionIndicator(ctx, indexTip[0], indexTip[1]);
 
-        if (isHandFist(landmarks)) {
-          const currentPos = {
-            x: indexTip[0],
-            y: indexTip[1],
-          };
+      //   if (isHandFist(landmarks)) {
+      //     const currentPos = {
+      //       x: indexTip[0],
+      //       y: indexTip[1],
+      //     };
 
-          const smoothedPos = smoothPosition(currentPos);
+      //     const smoothedPos = smoothPosition(currentPos);
 
-          if (lastPos.current) {
-            // drawLine(
-            //   drawingCtx,
-            //   lastPos.current.x,
-            //   lastPos.current.y,
-            //   smoothedPos.x,
-            //   smoothedPos.y
-            // );
-          }
+      //     if (lastPos.current) {
+      //       // drawLine(
+      //       //   drawingCtx,
+      //       //   lastPos.current.x,
+      //       //   lastPos.current.y,
+      //       //   smoothedPos.x,
+      //       //   smoothedPos.y
+      //       // );
+      //     }
 
-          lastPos.current = smoothedPos;
-          setIsDrawing(true);
-        } else {
-          if (isDrawing) {
-            setTimeout(() => {
-              lastPos.current = null;
-              setIsDrawing(false);
-              positionBuffer.current = [];
-            }, 100);
-          }
-        }
-      }
+      //     lastPos.current = smoothedPos;
+      //     setIsDrawing(true);
+      //   } else {
+      //     if (isDrawing) {
+      //       setTimeout(() => {
+      //         lastPos.current = null;
+      //         setIsDrawing(false);
+      //         positionBuffer.current = [];
+      //       }, 100);
+      //     }
+      //   }
+      // }
 
-      if (frameCount.current % 3 === 0) {
-        const detections = await faceapi
-          .detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
-          .withFaceLandmarks()
-          .withFaceExpressions();
+      // if (frameCount.current % 3 === 0) {
+      //   const detections = await faceapi
+      //     .detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
+      //     .withFaceLandmarks()
+      //     .withFaceExpressions();
 
-        setFaceDetections(detections);
+      //   setFaceDetections(detections);
 
-        faceapi.matchDimensions(canvasRef.current, {
-          width: videoWidth,
-          height: videoHeight,
-        });
+      //   faceapi.matchDimensions(canvasRef.current, {
+      //     width: videoWidth,
+      //     height: videoHeight,
+      //   });
 
-        const resizedDetections = faceapi.resizeResults(detections, {
-          width: videoWidth,
-          height: videoHeight,
-        });
+      //   const resizedDetections = faceapi.resizeResults(detections, {
+      //     width: videoWidth,
+      //     height: videoHeight,
+      //   });
 
-        if (detections.length > 0) {
-          const expressions = detections[0].expressions;
+      //   if (detections.length > 0) {
+      //     expressions = detections[0].expressions;
 
-          if (expressions.happy > 0.5) {
-            drawingCtx.strokeStyle = "yellow";
-          } else if (expressions.angry > 0.5) {
-            drawingCtx.strokeStyle = "red";
-          } else {
-            drawingCtx.strokeStyle = "blue";
-          }
+      //     if (expressions.happy > 0.5) {
+      //       drawingCtx.strokeStyle = "yellow";
+      //     } else if (expressions.angry > 0.5) {
+      //       drawingCtx.strokeStyle = "red";
+      //     } else {
+      //       drawingCtx.strokeStyle = "blue";
+      //     }
 
-          console.log("Detected Expressions: ", expressions);
-        }
-      }
+      //     console.log("Detected Expressions: ", expressions);
+      //   }
+      // }
     }
   };
 
-  const setup = (p5, canvasParentRef) => {
+  // React-P5
+  async function loadhands() {
+    handposeNet = await handpose.load();
+    console.log("Handpose model loaded.");
+    console.log("HandposeNet:", handposeNet);
+    handsloaded = true;
+  }
+
+  const setup = async (p5, canvasParentRef) => {
     p5.createCanvas(800, 800, p5.WEBGL).parent(canvasParentRef);
     p5.background("#fffceb");
 
@@ -309,22 +322,71 @@ function App() {
     brush.noHatch();
     brush.noField();
     brush.noStroke();
+
+    loadhands();
   };
 
-  const draw = (p5) => {
-    // if (hands.length > 0) {
-    //   const hand = hands[0];
-    //   const landmarks = hand.landmarks;
+  const draw = async (p5) => {
+    // detect(handposeNet);
+    if (webcamRef.current && webcamRef.current.video.readyState === 4) {
+      const video = webcamRef.current.video;
+      // const videoWidth = video.videoWidth;
+      // const videoHeight = video.videoHeight;
 
-    //   if (isHandFist(landmarks)) {
-    //     let x = indexTip[0];
-    //     let y = indexTip[0];
+      detections = await faceapi
+        .detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
+        .withFaceLandmarks()
+        .withFaceExpressions();
 
-    //     brush.bleed(p5.random(0.05, 0.4));
-    //     brush.fillTexture(0.55, 0.5);
-    //     brush.fill("#002185", p5.random(80, 140));
-    //     brush.rect(x, y, 100, 100);
-    //   }
+      setFaceDetections(detections);
+
+      if (detections.length > 0) {
+        const expressions = detections[0].expressions;
+        const availableEmotions = [expressions.happy, expressions.sad, expressions.angry];
+
+        switch (availableEmotions.indexOf(Math.max(...availableEmotions))) {
+          // happy
+          case 0:
+            brush.pick("happy");
+            color = "#ffba59";
+            break;
+
+          // sad
+          case 1:
+            brush.pick("sad");
+            color = "#002185";
+            break;
+
+          // angry
+          case 2:
+            brush.pick("angry");
+            color = "#9c1012";
+            break;
+
+          default:
+            break;
+        }
+      }
+
+      if (handsloaded) {
+        const hands = await handposeNet.estimateHands(video);
+
+        if (hands.length > 0) {
+          const hand = hands[0];
+          const landmarks = hand.landmarks;
+
+          if (isHandFist(landmarks)) {
+            // let x = indexTip[0];
+            // let y = indexTip[0];
+            brush.bleed(p5.random(0.05, 0.4));
+            brush.fillTexture(0.55, 0.5);
+            brush.fill(color, p5.random(80, 140));
+            brush.rect(0, 0, 100, 100);
+          }
+        }
+      }
+    }
+
 
     if (p5.mouseIsPressed) {
       let x = p5.mouseX - p5.width / 2;
