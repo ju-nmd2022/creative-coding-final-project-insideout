@@ -214,7 +214,7 @@ function App() {
               lastPos.current = null;
               setIsDrawing(false);
               positionBuffer.current = [];
-            }, 100);
+            }, 1);
           }
         }
       }
