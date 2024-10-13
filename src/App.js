@@ -392,7 +392,7 @@ function App() {
             zIndex: 9,
             width: 320,
             height: 240,
-            transform: "scaleX(-1)",
+            // transform: "scaleX(-1)",
           }}
         />
 
