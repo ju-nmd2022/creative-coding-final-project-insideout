@@ -394,8 +394,7 @@ function App() {
 
       brush.bleed(p5.random(0.05, 0.4));
       brush.fillTexture(0.55, 0.5);
-      brush.pick("happy");
-      brush.fill("#002185", p5.random(80, 140));
+      brush.fill(color, p5.random(80, 140));
       brush.rect(x, y, 100, 100);
     }
     // }
