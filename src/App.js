@@ -25,7 +25,7 @@ function App() {
   const handposeNet = useRef(null);
   const detections = useRef(null);
   const [handsloaded, setHandsloaded] = useState(false);
-  const [color, setColor] = useState("#ffba59");
+  let color = "#ffba59"; // Fallback
 
   const [faceDetections, setFaceDetections] = useState([]);
 
@@ -54,8 +54,8 @@ function App() {
   const calculate3DDistance = (point1, point2) => {
     return Math.sqrt(
       Math.pow(point1[0] - point2[0], 2) +
-        Math.pow(point1[1] - point2[1], 2) +
-        Math.pow(point1[2] - point2[2], 2)
+      Math.pow(point1[1] - point2[1], 2) +
+      Math.pow(point1[2] - point2[2], 2)
     );
   };
 
@@ -153,12 +153,12 @@ function App() {
   const calculateFingerDistance = (finger1, finger2) => {
     return Math.sqrt(
       Math.pow(finger1[0] - finger2[0], 2) +
-        Math.pow(finger1[1] - finger2[1], 2)
+      Math.pow(finger1[1] - finger2[1], 2)
     );
   };
 
   const detect = async (handposeNet) => {
-   
+
     frameCount.current += 1;
 
     if (webcamRef.current && webcamRef.current.video.readyState === 4) {
@@ -300,7 +300,7 @@ function App() {
         rotate: "natural",
       };
     };
-    
+
     brush.add("anxiety", anxietyAttack());
 
     brush.noHatch();
@@ -335,15 +335,15 @@ function App() {
         switch (availableEmotions.indexOf(Math.max(...availableEmotions))) {
           case 0:
             brush.pick("happy");
-            setColor("#ffba59");
+            color = "#ffba59";
             break;
           case 1:
             brush.pick("sad");
-            setColor("#002185");
+            color = "#002185";
             break;
           case 2:
             brush.pick("angry");
-            setColor("#9c1012");
+            color = "#9c1012";
             break;
           default:
             break;
@@ -353,9 +353,9 @@ function App() {
       // Randomly trigger the anxiety brush
       if (Math.random() < 0.3 && (Date.now() - lastAnxietyTime) > anxietyCooldown) { // 30% chance of system having an anxiety attack
         brush.set("anxiety");
-        setColor("#FF5733");
+        color = "#FF5733";
         lastAnxietyTime = Date.now();
-        }
+      }
 
 
       if (handsloaded) {
@@ -384,8 +384,8 @@ function App() {
             };
 
             const smoothedPos = smoothPosition(currentPos);
-            
-            lastPos.current = smoothedPos;            
+
+            lastPos.current = smoothedPos;
           }
         }
       }
@@ -395,7 +395,7 @@ function App() {
       let x = p5.mouseX;
       let y = p5.mouseY;
 
-    //it throws error here
+      //it throws error here
       brush.bleed(p5.random(0.05, 0.4));
       brush.fillTexture(0.55, 0.5);
       brush.fill(color, p5.random(80, 140));
@@ -437,7 +437,7 @@ function App() {
           }}
         />
 
-      <canvas
+        <canvas
           ref={drawingCanvasRef}
           style={{
             position: "absolute",
