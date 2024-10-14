@@ -1,8 +1,11 @@
-# Title
+# InsideOut platform
 
-description
+A creative system that channels your emotions into drawings, powered by an AI trained model and p5.js, inspired by the newest InsideOut movie
 
-Setup in loval env
+In the headquarters of your mind, emotions battle for control over a special art project. This project is a way of expressing your feelings in a creative way and seeing how they change over time. At the end of each session, the art becomes a video of a Memory Orb that reflects the emotional journey. The Memory Orbs are stored in a gallery, allowing the user to revisit past emotional journeys. Each orb is tagged with the dominant emotion or combination of emotions that shaped the artwork. This gallery evolves over time, acting as a visual diary of emotional expression. The inspiration for this system was taken from the newest Inside Out movie.
+
+
+Setup in local environment
 
 1. Install yarn and nvm
 2. Change react version to 16 - use command: nvm use 16
