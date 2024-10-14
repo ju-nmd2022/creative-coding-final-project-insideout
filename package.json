@@ -9,6 +9,7 @@
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "face-api.js": "^0.22.2",
+    "nvm": "^0.0.4",
     "p5": "^1.11.0",
     "p5.brush": "^1.1.2",
     "patch-package": "^8.0.0",

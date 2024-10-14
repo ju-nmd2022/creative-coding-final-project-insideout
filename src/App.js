@@ -158,6 +158,7 @@ function App() {
   };
 
   const detect = async (handposeNet) => {
+   
     frameCount.current += 1;
 
     if (webcamRef.current && webcamRef.current.video.readyState === 4) {
