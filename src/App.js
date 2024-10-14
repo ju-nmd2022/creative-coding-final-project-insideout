@@ -284,12 +284,34 @@ function App() {
       rotate: "natural",
     });
 
+    const anxietyAttack = () => {
+      return {
+        type: "custom",
+        weight: Math.random() * 10,
+        vibration: Math.random() * 0.2,
+        opacity: Math.floor(Math.random() * 100),
+        spacing: Math.random() * 5,
+        blend: Math.random() < 0.5,
+        pressure: {
+          type: "standard",
+          min_max: [Math.random() * 2, 0.5],
+          curve: [Math.random(), Math.random()],
+        },
+        rotate: "natural",
+      };
+    };
+    
+    brush.add("anxiety", anxietyAttack());
+
     brush.noHatch();
     brush.noField();
     brush.noStroke();
 
     loadhands();
   };
+
+  let lastAnxietyTime = 0; // just fyi, it logs the last anxiety attack
+  const anxietyCooldown = 3000;
 
   const draw = async (p5) => {
     if (webcamRef.current && webcamRef.current.video.readyState === 4) {
@@ -328,6 +350,14 @@ function App() {
         }
       }
 
+      // Randomly trigger the anxiety brush
+      if (Math.random() < 0.3 && (Date.now() - lastAnxietyTime) > anxietyCooldown) { // 30% chance of system having an anxiety attack
+        brush.set("anxiety");
+        setColor("#FF5733");
+        lastAnxietyTime = Date.now();
+        }
+
+
       if (handsloaded) {
         const hands = await handposeNet.current.estimateHands(video);
 
@@ -354,14 +384,8 @@ function App() {
             };
 
             const smoothedPos = smoothPosition(currentPos);
-
-            if (lastPos.current) {
-              brush.bleed(p5.random(0.05, 0.4));
-              brush.fillTexture(0.55, 0.5);
-              brush.fill(color, p5.random(80, 140));
-              brush.rect(smoothedPos.x - 500, smoothedPos.y - 500, 100, 100);
-            }
-            lastPos.current = smoothedPos;
+            
+            lastPos.current = smoothedPos;            
           }
         }
       }
@@ -371,6 +395,7 @@ function App() {
       let x = p5.mouseX;
       let y = p5.mouseY;
 
+    //it throws error here
       brush.bleed(p5.random(0.05, 0.4));
       brush.fillTexture(0.55, 0.5);
       brush.fill(color, p5.random(80, 140));
