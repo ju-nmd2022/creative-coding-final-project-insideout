@@ -412,7 +412,7 @@ function App() {
           }}
         />
 
-        <canvas
+      <canvas
           ref={drawingCanvasRef}
           style={{
             position: "absolute",
@@ -425,7 +425,7 @@ function App() {
             width: 640,
             height: 480,
             background: "white",
-            opacity: 0.5,
+            opacity: 0,
           }}
         />
 
