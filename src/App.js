@@ -395,7 +395,6 @@ function App() {
       let x = p5.mouseX;
       let y = p5.mouseY;
 
-      //it throws error here
       brush.bleed(p5.random(0.05, 0.4));
       brush.fillTexture(0.55, 0.5);
       brush.fill(color, p5.random(80, 140));
