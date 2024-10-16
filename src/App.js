@@ -124,7 +124,7 @@ function App() {
     });
   };
 
-const redrawHistory = () => {
+  const redrawHistory = () => {
     const ctx = drawingCanvasRef.current.getContext("2d");
     ctx.clearRect(
       0,
@@ -283,18 +283,18 @@ const redrawHistory = () => {
     });
 
     brush.add("anxiety", {
-        type: "custom",
-        weight: Math.random() * 10,
-        vibration: Math.random() * 0.2,
-        opacity: Math.floor(Math.random() * 100),
-        spacing: Math.random() * 5,
-        blend: Math.random() < 0.5,
-        pressure: {
-          type: "standard",
-          min_max: [Math.random() * 2, 0.5],
-          curve: [Math.random(), Math.random()],
-        },
-        rotate: "natural",
+      type: "custom",
+      weight: Math.random() * 10,
+      vibration: Math.random() * 0.2,
+      opacity: Math.floor(Math.random() * 100),
+      spacing: Math.random() * 5,
+      blend: Math.random() < 0.5,
+      pressure: {
+        type: "standard",
+        min_max: [Math.random() * 2, 0.5],
+        curve: [Math.random(), Math.random()],
+      },
+      rotate: "natural",
     });
 
     brush.noHatch();
@@ -344,12 +344,12 @@ const redrawHistory = () => {
         }
       }
 
-   // Randomly trigger the anxiety brush
+      // Randomly trigger the anxiety brush
       if (Math.random() < 0.3 && (Date.now() - lastAnxietyTime) > anxietyCooldown) { // 30% chance of system having an anxiety attack
         brush.pick("anxiety");
         setColor("#FF5733");
         lastAnxietyTime = Date.now();
-      } 
+      }
 
       if (handsloaded) {
         const hands = await handposeNet.current.estimateHands(video);
@@ -376,6 +376,11 @@ const redrawHistory = () => {
               y: p5.map(indexTip[1], 0, video.videoHeight, 0, p5.height),
             };
 
+            brush.bleed(p5.random(0.05, 0.4));
+            brush.fillTexture(0.55, 0.5);
+            brush.fill(color, p5.random(80, 140));
+            brush.rect(0, 0, 100, 100);
+
             const smoothedPos = smoothPosition(currentPos);
 
             lastPos.current = smoothedPos;
@@ -384,15 +389,15 @@ const redrawHistory = () => {
       }
     }
 
-  if (p5.mouseIsPressed) {
-      let x = p5.mouseX;
-      let y = p5.mouseY;
+    if (p5.mouseIsPressed) {
+      let x = p5.mouseX - p5.width / 2;
+      let y = p5.mouseY - p5.height / 2;
 
       brush.bleed(p5.random(0.05, 0.4));
       brush.fillTexture(0.55, 0.5);
       brush.fill(color, p5.random(80, 140));
       brush.rect(x, y, 100, 100);
-    } 
+    }
   };
 
   return (
