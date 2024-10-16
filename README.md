@@ -83,3 +83,7 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
 
 # hand-and-face-detection
+
+##Inspiration
+
+[Linear interpollation functions](https://www.trysmudford.com/blog/linear-interpolation-functions/)
