@@ -124,7 +124,7 @@ function App() {
     });
   };
 
-  const redrawHistory = () => {
+const redrawHistory = () => {
     const ctx = drawingCanvasRef.current.getContext("2d");
     ctx.clearRect(
       0,
@@ -283,6 +283,21 @@ function App() {
     });
 
     brush.add("anxiety", {
+        type: "custom",
+        weight: Math.random() * 10,
+        vibration: Math.random() * 0.2,
+        opacity: Math.floor(Math.random() * 100),
+        spacing: Math.random() * 5,
+        blend: Math.random() < 0.5,
+        pressure: {
+          type: "standard",
+          min_max: [Math.random() * 2, 0.5],
+          curve: [Math.random(), Math.random()],
+        },
+        rotate: "natural",
+    });
+
+    brush.add("digust", {
       type: "custom",
       weight: Math.random() * 10,
       vibration: Math.random() * 0.2,
@@ -295,7 +310,157 @@ function App() {
         curve: [Math.random(), Math.random()],
       },
       rotate: "natural",
+  });
+
+  brush.add("fear", {
+    type: "custom",
+    weight: Math.random() * 10,
+    vibration: Math.random() * 0.2,
+    opacity: Math.floor(Math.random() * 100),
+    spacing: Math.random() * 5,
+    blend: Math.random() < 0.5,
+    pressure: {
+      type: "standard",
+      min_max: [Math.random() * 2, 0.5],
+      curve: [Math.random(), Math.random()],
+    },
+    rotate: "natural",
+});
+
+    brush.add("envy", {
+        type: "custom",
+        weight: Math.random() * 10,
+        vibration: Math.random() * 0.2,
+        opacity: Math.floor(Math.random() * 100),
+        spacing: Math.random() * 5,
+        blend: Math.random() < 0.5,
+        pressure: {
+          type: "standard",
+          min_max: [Math.random() * 2, 0.5],
+          curve: [Math.random(), Math.random()],
+        },
+        rotate: "natural",
     });
+
+    brush.add("embarassment", {
+      type: "custom",
+      weight: Math.random() * 10,
+      vibration: Math.random() * 0.2,
+      opacity: Math.floor(Math.random() * 100),
+      spacing: Math.random() * 5,
+      blend: Math.random() < 0.5,
+      pressure: {
+        type: "standard",
+        min_max: [Math.random() * 2, 0.5],
+        curve: [Math.random(), Math.random()],
+      },
+      rotate: "natural",
+  });
+
+      brush.add("boredom", {
+        type: "custom",
+        weight: Math.random() * 10,
+        vibration: Math.random() * 0.2,
+        opacity: Math.floor(Math.random() * 100),
+        spacing: Math.random() * 5,
+        blend: Math.random() < 0.5,
+        pressure: {
+          type: "standard",
+          min_max: [Math.random() * 2, 0.5],
+          curve: [Math.random(), Math.random()],
+        },
+        rotate: "natural",
+    }); 
+    
+    brush.add("nostalgia", {
+      type: "custom",
+      weight: Math.random() * 10,
+      vibration: Math.random() * 0.2,
+      opacity: Math.floor(Math.random() * 100),
+      spacing: Math.random() * 5,
+      blend: Math.random() < 0.5,
+      pressure: {
+        type: "standard",
+        min_max: [Math.random() * 2, 0.5],
+        curve: [Math.random(), Math.random()],
+      },
+      rotate: "natural",
+  });
+
+  brush.add("sceptisism", {
+    type: "custom",
+    weight: Math.random() * 10,
+    vibration: Math.random() * 0.2,
+    opacity: Math.floor(Math.random() * 100),
+    spacing: Math.random() * 5,
+    blend: Math.random() < 0.5,
+    pressure: {
+      type: "standard",
+      min_max: [Math.random() * 2, 0.5],
+      curve: [Math.random(), Math.random()],
+    },
+    rotate: "natural",
+});
+
+brush.add("jealousy", {
+  type: "custom",
+  weight: Math.random() * 10,
+  vibration: Math.random() * 0.2,
+  opacity: Math.floor(Math.random() * 100),
+  spacing: Math.random() * 5,
+  blend: Math.random() < 0.5,
+  pressure: {
+    type: "standard",
+    min_max: [Math.random() * 2, 0.5],
+    curve: [Math.random(), Math.random()],
+  },
+  rotate: "natural",
+});
+
+brush.add("schadenfreude", {
+  type: "custom",
+  weight: Math.random() * 10,
+  vibration: Math.random() * 0.2,
+  opacity: Math.floor(Math.random() * 100),
+  spacing: Math.random() * 5,
+  blend: Math.random() < 0.5,
+  pressure: {
+    type: "standard",
+    min_max: [Math.random() * 2, 0.5],
+    curve: [Math.random(), Math.random()],
+  },
+  rotate: "natural",
+});
+
+brush.add("shame", {
+  type: "custom",
+  weight: Math.random() * 10,
+  vibration: Math.random() * 0.2,
+  opacity: Math.floor(Math.random() * 100),
+  spacing: Math.random() * 5,
+  blend: Math.random() < 0.5,
+  pressure: {
+    type: "standard",
+    min_max: [Math.random() * 2, 0.5],
+    curve: [Math.random(), Math.random()],
+  },
+  rotate: "natural",
+});
+
+brush.add("greed", {
+  type: "custom",
+  weight: Math.random() * 10,
+  vibration: Math.random() * 0.2,
+  opacity: Math.floor(Math.random() * 100),
+  spacing: Math.random() * 5,
+  blend: Math.random() < 0.5,
+  pressure: {
+    type: "standard",
+    min_max: [Math.random() * 2, 0.5],
+    curve: [Math.random(), Math.random()],
+  },
+  rotate: "natural",
+});
 
     brush.noHatch();
     brush.noField();
@@ -306,6 +471,39 @@ function App() {
 
   let lastAnxietyTime = 0; // just fyi, it logs the last anxiety attack
   const anxietyCooldown = 3000;
+
+  let lastDisgustTime = 0;
+  const disgustCooldown = 3000;
+
+  let lastFearTime = 0;
+  const fearCooldown = 3000;
+
+  let lastEnvyTime = 0;
+  const envyCooldown = 3000;
+
+  let lastEmbarassmentTime = 0;
+  const embarassmentCooldown = 3000;
+
+  let lastBoredomTime = 0;
+  const boredomCooldown = 3000;
+
+  let lastNostalgiaTime = 0;
+  const nostalgiaCooldown = 3000;
+
+  let lastSceptisismTime = 0;
+  const sceptisismCooldown = 3000;
+
+  let lastJealousyTime = 0;
+  const jealousyCooldown = 3000;
+
+  let lastSchadenfreudeTime = 0;
+  const schadenfreudeCooldown = 3000;
+
+  let lastShameTime = 0;
+  const shameCooldown = 3000;
+
+  let lastGreedTime = 0;
+  const greedCooldown = 3000;
 
   const draw = async (p5) => {
     if (webcamRef.current && webcamRef.current.video.readyState === 4) {
@@ -329,27 +527,100 @@ function App() {
         switch (availableEmotions.indexOf(Math.max(...availableEmotions))) {
           case 0:
             brush.pick("happy");
-            setColor("#ffba59");
+            setColor("#ffde59");
             break;
           case 1:
             brush.pick("sad");
-            setColor("#002185");
+            setColor("#38b6ff");
             break;
           case 2:
             brush.pick("angry");
-            setColor("#9c1012");
+            setColor("#ff1717");
             break;
           default:
             break;
         }
       }
 
-      // Randomly trigger the anxiety brush
+   // Randomly trigger the anxiety brush
       if (Math.random() < 0.3 && (Date.now() - lastAnxietyTime) > anxietyCooldown) { // 30% chance of system having an anxiety attack
         brush.pick("anxiety");
-        setColor("#FF5733");
+        setColor("#f67122");
         lastAnxietyTime = Date.now();
-      }
+      } 
+
+      // Randomly trigger disgust
+      if (Math.random() < 0.3 && (Date.now() - lastDisgustTime) > disgustCooldown) { 
+        brush.pick("disgust");
+        setColor("#c9e165");
+        lastDisgustTime = Date.now();
+      } 
+
+       // Randomly trigger fear
+       if (Math.random() < 0.3 && (Date.now() - lastFearTime) > fearCooldown) {
+        brush.pick("fear");
+        setColor("#c9e165");
+        lastFearTime = Date.now();
+      } 
+
+      // Randomly trigger envy
+      if (Math.random() < 0.3 && (Date.now() - lastEnvyTime) > envyCooldown) {
+        lastEnvyTime = Date.now();
+      } 
+
+      // Randomly trigger embarassment
+      if (Math.random() < 0.3 && (Date.now() - lastEmbarassmentTime) > embarassmentCooldown) {
+        brush.pick("embarassment");
+        setColor("#f85ebe");
+        lastEmbarassmentTime = Date.now();
+      } 
+
+      // Randomly trigger boredom
+      if (Math.random() < 0.3 && (Date.now() - lastBoredomTime) > boredomCooldown) { 
+        setColor("#5e69b9");
+        lastBoredomTime = Date.now();
+      } 
+
+      // Randomly trigger nostalgia
+      if (Math.random() < 0.3 && (Date.now() - lastNostalgiaTime) > nostalgiaCooldown) {
+        brush.pick("nostalgia");
+        setColor("#ae8175");
+        lastNostalgiaTime = Date.now();
+      } 
+
+       // Randomly trigger sceptisism
+       if (Math.random() < 0.3 && (Date.now() - lastSceptisismTime) > sceptisismCooldown) { 
+        brush.pick("sceptisism");
+        setColor("#7f832e");
+        lastSceptisismTime = Date.now();
+      } 
+
+       // Randomly trigger jealousy
+       if (Math.random() < 0.3 && (Date.now() - lastJealousyTime) > jealousyCooldown) {
+        brush.pick("jealousy");
+        setColor("#a5cd98");
+        lastJealousyTime = Date.now();
+      } 
+
+       // Randomly trigger schadenfreude
+       if (Math.random() < 0.3 && (Date.now() - lastSchadenfreudeTime) > schadenfreudeCooldown) {
+        setColor("#a5cd98");
+        lastSchadenfreudeTime = Date.now();
+      } 
+
+      // Randomly trigger shame
+      if (Math.random() < 0.3 && (Date.now() - lastShameTime) > shameCooldown) {
+        brush.pick("shame");
+        setColor("#6c959f");
+        lastShameTime = Date.now();
+      } 
+
+       // Randomly trigger greed
+       if (Math.random() < 0.3 && (Date.now() - lastGreedTime) > greedCooldown) {
+        brush.pick("greed");
+        setColor("#29c784");
+        lastGreedTime = Date.now();
+      } 
 
       if (handsloaded) {
         const hands = await handposeNet.current.estimateHands(video);
@@ -376,11 +647,6 @@ function App() {
               y: p5.map(indexTip[1], 0, video.videoHeight, 0, p5.height),
             };
 
-            brush.bleed(p5.random(0.05, 0.4));
-            brush.fillTexture(0.55, 0.5);
-            brush.fill(color, p5.random(80, 140));
-            brush.rect(0, 0, 100, 100);
-
             const smoothedPos = smoothPosition(currentPos);
 
             lastPos.current = smoothedPos;
@@ -389,15 +655,15 @@ function App() {
       }
     }
 
-    if (p5.mouseIsPressed) {
-      let x = p5.mouseX - p5.width / 2;
-      let y = p5.mouseY - p5.height / 2;
+  if (p5.mouseIsPressed) {
+      let x = p5.mouseX;
+      let y = p5.mouseY;
 
       brush.bleed(p5.random(0.05, 0.4));
       brush.fillTexture(0.55, 0.5);
       brush.fill(color, p5.random(80, 140));
       brush.rect(x, y, 100, 100);
-    }
+    } 
   };
 
   return (
