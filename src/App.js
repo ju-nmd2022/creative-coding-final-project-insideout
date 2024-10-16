@@ -25,7 +25,7 @@ function App() {
   const handposeNet = useRef(null);
   const detections = useRef(null);
   const [handsloaded, setHandsloaded] = useState(false);
-  let color = "#ffba59"; // Fallback
+  const [color, setColor] = useState("ffba59")
 
   const [faceDetections, setFaceDetections] = useState([]);
 
@@ -85,8 +85,6 @@ function App() {
       5;
 
     const threshold = palmWidth * 1.2;
-
-    console.log("threshold reached!"); // for testing
 
     return avgFingerDistance < threshold;
   };
@@ -285,18 +283,18 @@ const redrawHistory = () => {
     });
 
     brush.add("anxiety", {
-      type: "custom",
-      weight: 10,
-      vibration: 0.5,
-      opacity: 28,
-      spacing: 1,
-      blend: true,
-      pressure: {
-        type: "standard",
-        min_max: [1.35, 1],
-        curve: [0.35, 0.25],
-      },
-      rotate: "natural",
+        type: "custom",
+        weight: Math.random() * 10,
+        vibration: Math.random() * 0.2,
+        opacity: Math.floor(Math.random() * 100),
+        spacing: Math.random() * 5,
+        blend: Math.random() < 0.5,
+        pressure: {
+          type: "standard",
+          min_max: [Math.random() * 2, 0.5],
+          curve: [Math.random(), Math.random()],
+        },
+        rotate: "natural",
     });
 
   /*   const anxietyAttack = () => {
@@ -333,8 +331,6 @@ const redrawHistory = () => {
       };
     }; */
 
-    //brush.add("anxiety", anxietyAttack());
-
     brush.noHatch();
     brush.noField();
     brush.noStroke();
@@ -367,34 +363,27 @@ const redrawHistory = () => {
         switch (availableEmotions.indexOf(Math.max(...availableEmotions))) {
           case 0:
             brush.pick("happy");
-            color = "#ffba59";
+            setColor("#ffba59");
             break;
           case 1:
             brush.pick("sad");
-            color = "#002185";
+            setColor("#002185");
             break;
           case 2:
             brush.pick("angry");
-            color = "#9c1012";
+            setColor("#9c1012");
             break;
           default:
             break;
         }
       }
 
-   /*    // Randomly trigger the anxiety brush
+   // Randomly trigger the anxiety brush
       if (Math.random() < 0.3 && (Date.now() - lastAnxietyTime) > anxietyCooldown) { // 30% chance of system having an anxiety attack
-        brush.set("anxiety");
-        color = "#FF5733";
+        brush.pick("anxiety");
+        setColor("#FF5733");
         lastAnxietyTime = Date.now();
-      } */
-
-      if ((Date.now() - lastAnxietyTime) > anxietyCooldown) {
-          brush.set("anxiety");
-          color = "#FF5733";
-          lastAnxietyTime = Date.now();
-      }
-
+      } 
 
       if (handsloaded) {
         const hands = await handposeNet.current.estimateHands(video);
