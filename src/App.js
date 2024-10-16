@@ -54,8 +54,8 @@ function App() {
   const calculate3DDistance = (point1, point2) => {
     return Math.sqrt(
       Math.pow(point1[0] - point2[0], 2) +
-        Math.pow(point1[1] - point2[1], 2) +
-        Math.pow(point1[2] - point2[2], 2)
+      Math.pow(point1[1] - point2[1], 2) +
+      Math.pow(point1[2] - point2[2], 2)
     );
   };
 
@@ -124,21 +124,21 @@ function App() {
     });
   };
 
-  const redrawHistory = () => {
-    const ctx = drawingCanvasRef.current.getContext("2d");
-    ctx.clearRect(
-      0,
-      0,
-      drawingCanvasRef.current.width,
-      drawingCanvasRef.current.height
-    );
+  // const redrawHistory = () => {
+  //   const ctx = drawingCanvasRef.current.getContext("2d");
+  //   ctx.clearRect(
+  //     0,
+  //     0,
+  //     drawingCanvasRef.current.width,
+  //     drawingCanvasRef.current.height
+  //   );
 
-    drawingHistory.current.forEach((line) => {
-      ctx.strokeStyle = line.style;
-      ctx.lineWidth = line.width;
-      drawLine(ctx, line.x1, line.y1, line.x2, line.y2);
-    });
-  };
+  //   drawingHistory.current.forEach((line) => {
+  //     ctx.strokeStyle = line.style;
+  //     ctx.lineWidth = line.width;
+  //     drawLine(ctx, line.x1, line.y1, line.x2, line.y2);
+  //   });
+  // };
 
   const drawPositionIndicator = (ctx, x, y) => {
     ctx.beginPath();
@@ -151,7 +151,7 @@ function App() {
   const calculateFingerDistance = (finger1, finger2) => {
     return Math.sqrt(
       Math.pow(finger1[0] - finger2[0], 2) +
-        Math.pow(finger1[1] - finger2[1], 2)
+      Math.pow(finger1[1] - finger2[1], 2)
     );
   };
 
@@ -703,6 +703,10 @@ function App() {
     }
   };
 
+  function saveCanvas(p5) {
+    p5.saveCanvas("canvas.jpg");
+  }
+
   return (
     <div className="App">
       <header className="App-header">
@@ -754,6 +758,8 @@ function App() {
         />
 
         <Sketch setup={setup} draw={draw} />
+
+        <button onclick="saveCanvas();">Save canvas</button>
       </header>
     </div>
   );
