@@ -3,7 +3,7 @@
 // YouTube vide link: https://www.youtube.com/watch?v=f7uBsb-0sGQ&t=675s
 
 import React, { useRef, useEffect, useState } from "react";
-//import * as tf from "@tensorflow/tfjs";
+import * as tf from "@tensorflow/tfjs";
 import * as handpose from "@tensorflow-models/handpose";
 import * as faceapi from "face-api.js";
 import Webcam from "react-webcam";
