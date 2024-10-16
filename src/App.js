@@ -25,7 +25,7 @@ function App() {
   const handposeNet = useRef(null);
   const detections = useRef(null);
   const [handsloaded, setHandsloaded] = useState(false);
-  const [color, setColor] = useState("ffba59")
+  const [color, setColor] = useState("ffba59");
 
   const [faceDetections, setFaceDetections] = useState([]);
 
@@ -54,8 +54,8 @@ function App() {
   const calculate3DDistance = (point1, point2) => {
     return Math.sqrt(
       Math.pow(point1[0] - point2[0], 2) +
-      Math.pow(point1[1] - point2[1], 2) +
-      Math.pow(point1[2] - point2[2], 2)
+        Math.pow(point1[1] - point2[1], 2) +
+        Math.pow(point1[2] - point2[2], 2)
     );
   };
 
@@ -151,12 +151,11 @@ function App() {
   const calculateFingerDistance = (finger1, finger2) => {
     return Math.sqrt(
       Math.pow(finger1[0] - finger2[0], 2) +
-      Math.pow(finger1[1] - finger2[1], 2)
+        Math.pow(finger1[1] - finger2[1], 2)
     );
   };
 
   const detect = async (handposeNet) => {
-
     frameCount.current += 1;
 
     if (webcamRef.current && webcamRef.current.video.readyState === 4) {
@@ -316,6 +315,8 @@ function App() {
         .withFaceLandmarks()
         .withFaceExpressions();
 
+      console.log("Face Detections:", detections.current);
+
       setFaceDetections(detections.current);
 
       if (detections.current.length > 0) {
@@ -345,7 +346,11 @@ function App() {
       }
 
       // Randomly trigger the anxiety brush
-      if (Math.random() < 0.3 && (Date.now() - lastAnxietyTime) > anxietyCooldown) { // 30% chance of system having an anxiety attack
+      if (
+        Math.random() < 0.3 &&
+        Date.now() - lastAnxietyTime > anxietyCooldown
+      ) {
+        // 30% chance of system having an anxiety attack
         brush.pick("anxiety");
         setColor("#FF5733");
         lastAnxietyTime = Date.now();
@@ -372,17 +377,23 @@ function App() {
 
           if (thumbIndexDistance < 40 && indexMiddleDistance > 30) {
             const currentPos = {
-              x: p5.map(indexTip[0], 0, video.videoWidth, 0, p5.width),
+              x: p5.map(indexTip[0], 0, video.videoWidth, p5.width, 0),
               y: p5.map(indexTip[1], 0, video.videoHeight, 0, p5.height),
             };
 
-            brush.bleed(p5.random(0.05, 0.4));
-            brush.fillTexture(0.55, 0.5);
-            brush.fill(color, p5.random(80, 140));
-            brush.rect(0, 0, 100, 100);
-
             const smoothedPos = smoothPosition(currentPos);
 
+            if (lastPos.current) {
+              brush.bleed(p5.random(0.05, 0.4));
+              brush.fillTexture(0.55, 0.5);
+              brush.fill(color, p5.random(80, 140));
+              brush.rect(
+                smoothedPos.x - p5.width / 2,
+                smoothedPos.y - 500,
+                100,
+                100
+              );
+            }
             lastPos.current = smoothedPos;
           }
         }
@@ -415,7 +426,6 @@ function App() {
             zIndex: 9,
             width: 320,
             height: 240,
-            // transform: "scaleX(-1)",
           }}
         />
 
