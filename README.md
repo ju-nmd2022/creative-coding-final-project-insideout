@@ -84,6 +84,6 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/tr
 
 # hand-and-face-detection
 
-##Inspiration
+## Inspiration
 
 [Linear interpollation functions](https://www.trysmudford.com/blog/linear-interpolation-functions/)
