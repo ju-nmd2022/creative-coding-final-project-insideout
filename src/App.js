@@ -126,7 +126,7 @@ function App() {
     });
   };
 
-  const redrawHistory = () => {
+const redrawHistory = () => {
     const ctx = drawingCanvasRef.current.getContext("2d");
     ctx.clearRect(
       0,
@@ -284,7 +284,22 @@ function App() {
       rotate: "natural",
     });
 
-    const anxietyAttack = () => {
+    brush.add("anxiety", {
+      type: "custom",
+      weight: 10,
+      vibration: 0.5,
+      opacity: 28,
+      spacing: 1,
+      blend: true,
+      pressure: {
+        type: "standard",
+        min_max: [1.35, 1],
+        curve: [0.35, 0.25],
+      },
+      rotate: "natural",
+    });
+
+  /*   const anxietyAttack = () => {
       return {
         type: "custom",
         weight: Math.random() * 10,
@@ -299,9 +314,26 @@ function App() {
         },
         rotate: "natural",
       };
-    };
+    }; */
 
-    brush.add("anxiety", anxietyAttack());
+/*     const anxietyAttack = () => {
+      return {
+        type: "custom",
+        weight: 10,
+        vibration: 0.2,
+        opacity: 50,
+        spacing: 2, 
+        blend: true,  
+        pressure: {
+          type: "standard",
+          min_max: [1.5, 0.5], 
+          curve: [0.7, 0.7],
+        },
+        rotate: "natural",
+      };
+    }; */
+
+    //brush.add("anxiety", anxietyAttack());
 
     brush.noHatch();
     brush.noField();
@@ -350,11 +382,17 @@ function App() {
         }
       }
 
-      // Randomly trigger the anxiety brush
+   /*    // Randomly trigger the anxiety brush
       if (Math.random() < 0.3 && (Date.now() - lastAnxietyTime) > anxietyCooldown) { // 30% chance of system having an anxiety attack
         brush.set("anxiety");
         color = "#FF5733";
         lastAnxietyTime = Date.now();
+      } */
+
+      if ((Date.now() - lastAnxietyTime) > anxietyCooldown) {
+          brush.set("anxiety");
+          color = "#FF5733";
+          lastAnxietyTime = Date.now();
       }
 
 
@@ -391,7 +429,7 @@ function App() {
       }
     }
 
-    if (p5.mouseIsPressed) {
+  if (p5.mouseIsPressed) {
       let x = p5.mouseX;
       let y = p5.mouseY;
 
@@ -399,7 +437,7 @@ function App() {
       brush.fillTexture(0.55, 0.5);
       brush.fill(color, p5.random(80, 140));
       brush.rect(x, y, 100, 100);
-    }
+    } 
   };
 
   return (
