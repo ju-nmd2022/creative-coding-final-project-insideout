@@ -31,17 +31,17 @@ function App() {
 
   useEffect(() => {
     runDetection();
-    setupDrawingCanvas();
+    // setupDrawingCanvas();
   }, []);
 
-  const setupDrawingCanvas = () => {
-    const drawingCanvas = drawingCanvasRef.current;
-    const ctx = drawingCanvas.getContext("2d");
-    ctx.strokeStyle = "blue"; // Default stroke color
-    ctx.lineWidth = 4;
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round"; // Smooth line joins
-  };
+  // const setupDrawingCanvas = () => {
+  //   const drawingCanvas = drawingCanvasRef.current;
+  //   const ctx = drawingCanvas.getContext("2d");
+  //   ctx.strokeStyle = "blue"; // Default stroke color
+  //   ctx.lineWidth = 4;
+  //   ctx.lineCap = "round";
+  //   ctx.lineJoin = "round"; // Smooth line joins
+  // };
 
   const runDetection = async () => {
     await faceapi.nets.tinyFaceDetector.loadFromUri("/models");
@@ -124,25 +124,27 @@ function App() {
     });
   };
 
-  // const redrawHistory = () => {
-  //   const ctx = drawingCanvasRef.current.getContext("2d");
-  //   ctx.clearRect(
-  //     0,
-  //     0,
-  //     drawingCanvasRef.current.width,
-  //     drawingCanvasRef.current.height
-  //   );
+  const redrawHistory = () => {
+    const ctx = drawingCanvasRef.current.getContext("2d");
+    ctx.clearRect(
+      0,
+      0,
+      drawingCanvasRef.current.width,
+      drawingCanvasRef.current.height
+    );
 
-  //   drawingHistory.current.forEach((line) => {
-  //     ctx.strokeStyle = line.style;
-  //     ctx.lineWidth = line.width;
-  //     drawLine(ctx, line.x1, line.y1, line.x2, line.y2);
-  //   });
-  // };
+    drawingHistory.current.forEach((line) => {
+      ctx.strokeStyle = line.style;
+      ctx.lineWidth = line.width;
+      drawLine(ctx, line.x1, line.y1, line.x2, line.y2);
+    });
+  };
 
-  const drawPositionIndicator = (ctx, x, y) => {
+  const drawPositionIndicator = (x, y) => {
+    redrawHistory();
+    const ctx = drawingCanvasRef.current.getContext("2d");
     ctx.beginPath();
-    ctx.arc(x, y, 8, 0, 2 * Math.PI); // Draw a circle with radius 8
+    ctx.arc(x, y, 30, 0, 2 * Math.PI);
     ctx.fillStyle = "red";
     ctx.fill();
     ctx.closePath();
@@ -155,69 +157,69 @@ function App() {
     );
   };
 
-  const detect = async (handposeNet) => {
-    frameCount.current += 1;
+  // const detect = async (handposeNet) => {
+  //   frameCount.current += 1;
 
-    if (webcamRef.current && webcamRef.current.video.readyState === 4) {
-      const video = webcamRef.current.video;
-      const videoWidth = video.videoWidth;
-      const videoHeight = video.videoHeight;
+  //   if (webcamRef.current && webcamRef.current.video.readyState === 4) {
+  //     const video = webcamRef.current.video;
+  //     const videoWidth = video.videoWidth;
+  //     const videoHeight = video.videoHeight;
 
-      canvasRef.current.width = videoWidth;
-      canvasRef.current.height = videoHeight;
+  //     canvasRef.current.width = videoWidth;
+  //     canvasRef.current.height = videoHeight;
 
-      if (drawingCanvasRef.current.width !== videoWidth) {
-        drawingCanvasRef.current.width = videoWidth;
-        drawingCanvasRef.current.height = videoHeight;
-      }
+  //     if (drawingCanvasRef.current.width !== videoWidth) {
+  //       drawingCanvasRef.current.width = videoWidth;
+  //       drawingCanvasRef.current.height = videoHeight;
+  //     }
 
-      const drawingCtx = drawingCanvasRef.current.getContext("2d");
-      const ctx = canvasRef.current.getContext("2d");
+  //     const drawingCtx = drawingCanvasRef.current.getContext("2d");
+  //     const ctx = canvasRef.current.getContext("2d");
 
-      // Normalize hand coordinates to canvas size
-      const hands = await handposeNet.current.estimateHands(video);
-      if (hands.length > 0) {
-        const hand = hands[0];
-        const landmarks = hand.landmarks;
+  //     // Normalize hand coordinates to canvas size
+  //     const hands = await handposeNet.current.estimateHands(video);
+  //     if (hands.length > 0) {
+  //       const hand = hands[0];
+  //       const landmarks = hand.landmarks;
 
-        // Assume indexTip is the tip of the finger for drawing
-        const indexTip = landmarks[8];
-        const normalizedX =
-          indexTip[0] * (drawingCanvasRef.current.width / videoWidth);
-        const normalizedY =
-          indexTip[1] * (drawingCanvasRef.current.height / videoHeight);
+  //       // Assume indexTip is the tip of the finger for drawing
+  //       const indexTip = landmarks[8];
+  //       const normalizedX =
+  //         indexTip[0] * (drawingCanvasRef.current.width / videoWidth);
+  //       const normalizedY =
+  //         indexTip[1] * (drawingCanvasRef.current.height / videoHeight);
 
-        drawPositionIndicator(drawingCtx, normalizedX, normalizedY);
+  //       drawPositionIndicator(drawingCtx, normalizedX, normalizedY);
 
-        // Draw lines when the hand is in a fist position (for drawing)
-        if (isHandFist(landmarks)) {
-          const currentPos = { x: normalizedX, y: normalizedY };
-          const smoothedPos = smoothPosition(currentPos);
+  //       // Draw lines when the hand is in a fist position (for drawing)
+  //       if (isHandFist(landmarks)) {
+  //         const currentPos = { x: normalizedX, y: normalizedY };
+  //         const smoothedPos = smoothPosition(currentPos);
 
-          if (lastPos.current) {
-            drawLine(
-              drawingCtx,
-              lastPos.current.x,
-              lastPos.current.y,
-              smoothedPos.x,
-              smoothedPos.y
-            );
-          }
+  //         if (lastPos.current) {
+  //           drawLine(
+  //             drawingCtx,
+  //             lastPos.current.x,
+  //             lastPos.current.y,
+  //             smoothedPos.x,
+  //             smoothedPos.y
+  //           );
+  //         }
 
-          lastPos.current = smoothedPos;
-          setIsDrawing(true);
-        } else {
-          if (isDrawing) {
-            setTimeout(() => {
-              lastPos.current = null;
-              setIsDrawing(false);
-              positionBuffer.current = [];
-            }, 1);
-          }
-        }
-      }
-    }
-  };
+  //         lastPos.current = smoothedPos;
+  //         setIsDrawing(true);
+  //       } else {
+  //         if (isDrawing) {
+  //           setTimeout(() => {
+  //             lastPos.current = null;
+  //             setIsDrawing(false);
+  //             positionBuffer.current = [];
+  //           }, 1);
+  //         }
+  //       }
+  //     }
+  //   }
+  // };
 
   // React-P5
   async function loadhands() {
@@ -228,12 +230,21 @@ function App() {
   }
 
   const setup = async (p5, canvasParentRef) => {
-    p5.createCanvas(1000, 800, p5.WEBGL).parent(canvasParentRef);
-    p5.background("#fffceb");
+    p5.createCanvas(p5.windowWidth * 0.9, p5.windowHeight * 0.9, p5.WEBGL).parent(canvasParentRef);
+    p5.background("#ffffff");
+    p5.frameRate(60);
+
+    const saveBtn = p5.createButton("Save Canvas");
+    saveBtn.position(20, 20);
+    saveBtn.mousePressed(() => {
+      p5.saveCanvas('canvas', 'png')
+    });
 
     brush.instance(p5);
     brush.load();
     brush.reDraw();
+
+    loadhands();
 
     // Brushes for each emotion
     brush.add("happy", {
@@ -296,7 +307,7 @@ function App() {
       rotate: "natural",
     });
 
-    brush.add("digust", {
+    brush.add("disgust", {
       type: "custom",
       weight: Math.random() * 10,
       vibration: Math.random() * 0.2,
@@ -460,22 +471,20 @@ function App() {
       },
       rotate: "natural",
     });
-
-    brush.noHatch();
-    brush.noField();
-    brush.noStroke();
-
-    loadhands();
   };
 
-  let lastAnxietyTime = 0; // just fyi, it logs the last anxiety attack
+  let emotionTriggered = false;
+  let lastTriggerTime = 0;
+  const triggerCooldown = 5000;
+
+  let lastAnxietyTime = 0;
   const anxietyCooldown = 3000;
 
-  let lastDisgustTime = 0;
-  const disgustCooldown = 3000;
+  // let lastDisgustTime = 0;
+  // const disgustCooldown = 3000;
 
-  let lastFearTime = 0;
-  const fearCooldown = 3000;
+  // let lastFearTime = 0;
+  // const fearCooldown = 3000;
 
   let lastEnvyTime = 0;
   const envyCooldown = 3000;
@@ -513,16 +522,18 @@ function App() {
         .withFaceLandmarks()
         .withFaceExpressions();
 
-      console.log("Face Detections:", detections.current);
+      //console.log("Face Detections:", detections.current);
 
       setFaceDetections(detections.current);
 
-      if (detections.current.length > 0) {
+      if (detections.current.length > 0 && !emotionTriggered) {
         const expressions = detections.current[0].expressions;
         const availableEmotions = [
           expressions.happy,
           expressions.sad,
           expressions.angry,
+          expressions.disgusted,
+          expressions.fearful
         ];
 
         switch (availableEmotions.indexOf(Math.max(...availableEmotions))) {
@@ -538,6 +549,14 @@ function App() {
             brush.pick("angry");
             setColor("#ff1717");
             break;
+          case 3:
+            brush.pick("disgust");
+            setColor("#c9e165");
+            break;
+          case 4:
+            brush.pick("fear");
+            setColor("#c9e165");
+            break;
           default:
             break;
         }
@@ -552,100 +571,124 @@ function App() {
         brush.pick("anxiety");
         setColor("#f67122");
         lastAnxietyTime = Date.now();
+        lastTriggerTime = Date.now();
       }
 
-      // Randomly trigger disgust
-      if (
-        Math.random() < 0.3 &&
-        Date.now() - lastDisgustTime > disgustCooldown
-      ) {
-        brush.pick("disgust");
-        setColor("#c9e165");
-        lastDisgustTime = Date.now();
-      }
+      // // Randomly trigger disgust
+      // if (
+      //   Math.random() < 0.3 &&
+      //   Date.now() - lastDisgustTime > disgustCooldown
+      // ) {
+      //   brush.pick("disgust");
+      //   setColor("#c9e165");
+      //   lastDisgustTime = Date.now();
+      //   lastTriggerTime = Date.now();
+      // }
 
-      // Randomly trigger fear
-      if (Math.random() < 0.3 && Date.now() - lastFearTime > fearCooldown) {
-        brush.pick("fear");
-        setColor("#c9e165");
-        lastFearTime = Date.now();
-      }
+      // // Randomly trigger fear
+      // if (
+      //   Math.random() < 0.3 &&
+      //   Date.now() - lastFearTime > fearCooldown
+      // ) {
+      //   brush.pick("fear");
+      //   setColor("#c9e165");
+      //   lastFearTime = Date.now();
+      //   lastTriggerTime = Date.now();
+      // }
 
       // Randomly trigger envy
-      if (Math.random() < 0.3 && Date.now() - lastEnvyTime > envyCooldown) {
+      if (
+        Math.random() < 0.02 &&
+        Date.now() - lastEnvyTime > envyCooldown
+      ) {
         lastEnvyTime = Date.now();
+        lastTriggerTime = Date.now();
       }
 
       // Randomly trigger embarassment
       if (
-        Math.random() < 0.3 &&
+        Math.random() < 0.02 &&
         Date.now() - lastEmbarassmentTime > embarassmentCooldown
       ) {
         brush.pick("embarassment");
         setColor("#f85ebe");
         lastEmbarassmentTime = Date.now();
+        lastTriggerTime = Date.now();
       }
 
       // Randomly trigger boredom
       if (
-        Math.random() < 0.3 &&
+        Math.random() < 0.02 &&
         Date.now() - lastBoredomTime > boredomCooldown
       ) {
         setColor("#5e69b9");
         lastBoredomTime = Date.now();
+        lastTriggerTime = Date.now();
       }
 
       // Randomly trigger nostalgia
       if (
-        Math.random() < 0.3 &&
+        Math.random() < 0.02 &&
         Date.now() - lastNostalgiaTime > nostalgiaCooldown
       ) {
         brush.pick("nostalgia");
         setColor("#ae8175");
         lastNostalgiaTime = Date.now();
+        lastTriggerTime = Date.now();
       }
 
       // Randomly trigger sceptisism
       if (
-        Math.random() < 0.3 &&
+        Math.random() < 0.02 &&
         Date.now() - lastSceptisismTime > sceptisismCooldown
       ) {
         brush.pick("sceptisism");
         setColor("#7f832e");
         lastSceptisismTime = Date.now();
+        lastTriggerTime = Date.now();
       }
 
       // Randomly trigger jealousy
       if (
-        Math.random() < 0.3 &&
+        Math.random() < 0.02 &&
         Date.now() - lastJealousyTime > jealousyCooldown
       ) {
         brush.pick("jealousy");
         setColor("#a5cd98");
         lastJealousyTime = Date.now();
+        lastTriggerTime = Date.now();
       }
 
       // Randomly trigger schadenfreude
       if (
-        Math.random() < 0.3 &&
+        Math.random() < 0.02 &&
         Date.now() - lastSchadenfreudeTime > schadenfreudeCooldown
       ) {
         setColor("#a5cd98");
         lastSchadenfreudeTime = Date.now();
+        lastTriggerTime = Date.now();
       }
 
       // Randomly trigger shame
-      if (Math.random() < 0.3 && Date.now() - lastShameTime > shameCooldown) {
+      if (
+        Math.random() < 0.02 &&
+        Date.now() - lastShameTime > shameCooldown
+      ) {
         brush.pick("shame");
         setColor("#6c959f");
         lastShameTime = Date.now();
+        lastTriggerTime = Date.now();
       }
 
       // Randomly trigger greed
-      if (Math.random() < 0.3 && Date.now() - lastGreedTime > greedCooldown) {
+      if (
+        Math.random() < 0.02 &&
+        Date.now() - lastGreedTime > greedCooldown
+      ) {
         brush.pick("greed");
         setColor("#29c784");
         lastGreedTime = Date.now();
+        lastTriggerTime = Date.now();
       }
 
       if (handsloaded) {
@@ -667,6 +710,13 @@ function App() {
             middleTip
           );
 
+          const ctx = drawingCanvasRef.current.getContext("2d");
+          ctx.beginPath();
+          ctx.arc(thumbTip.x, thumbTip.y, 30, 0, 2 * Math.PI);
+          ctx.fillStyle = "red";
+          ctx.fill();
+          ctx.closePath();
+
           if (thumbIndexDistance < 40 && indexMiddleDistance > 30) {
             const currentPos = {
               x: p5.map(indexTip[0], 0, video.videoWidth, p5.width, 0),
@@ -675,18 +725,23 @@ function App() {
 
             const smoothedPos = smoothPosition(currentPos);
 
-            if (lastPos.current) {
-              brush.bleed(p5.random(0.05, 0.4));
-              brush.fillTexture(0.55, 0.5);
-              brush.fill(color, p5.random(80, 140));
-              brush.rect(
-                smoothedPos.x - p5.width / 2,
-                smoothedPos.y - 500,
-                100,
-                100
-              );
-            }
-            lastPos.current = smoothedPos;
+            brush.noHatch();
+            brush.noField();
+            brush.noStroke();
+            brush.bleed(p5.random(0.05, 0.4));
+            brush.fillTexture(0.55, 0.5);
+            brush.fill(color, p5.random(80, 140));
+            brush.rect(
+              smoothedPos.x - p5.width / 2,
+              smoothedPos.y - p5.height / 2,
+              100,
+              100
+            );
+
+            // if (lastPos.current) {
+
+            // }
+            // lastPos.current = smoothedPos;
           }
         }
       }
@@ -703,10 +758,6 @@ function App() {
     }
   };
 
-  function saveCanvas(p5) {
-    p5.saveCanvas("canvas.jpg");
-  }
-
   return (
     <div className="App">
       <header className="App-header">
@@ -722,6 +773,7 @@ function App() {
             zIndex: 9,
             width: 320,
             height: 240,
+            opacity: 0,
           }}
         />
 
@@ -750,16 +802,13 @@ function App() {
             right: 0,
             textAlign: "center",
             zIndex: 10,
-            width: 640,
-            height: 480,
-            background: "white",
-            opacity: 0,
+            width: "100vw",
+            height: "100vh",
+            background: "transparent",
           }}
         />
 
         <Sketch setup={setup} draw={draw} />
-
-        <button onclick="saveCanvas();">Save canvas</button>
       </header>
     </div>
   );
