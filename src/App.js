@@ -297,40 +297,6 @@ const redrawHistory = () => {
         rotate: "natural",
     });
 
-  /*   const anxietyAttack = () => {
-      return {
-        type: "custom",
-        weight: Math.random() * 10,
-        vibration: Math.random() * 0.2,
-        opacity: Math.floor(Math.random() * 100),
-        spacing: Math.random() * 5,
-        blend: Math.random() < 0.5,
-        pressure: {
-          type: "standard",
-          min_max: [Math.random() * 2, 0.5],
-          curve: [Math.random(), Math.random()],
-        },
-        rotate: "natural",
-      };
-    }; */
-
-/*     const anxietyAttack = () => {
-      return {
-        type: "custom",
-        weight: 10,
-        vibration: 0.2,
-        opacity: 50,
-        spacing: 2, 
-        blend: true,  
-        pressure: {
-          type: "standard",
-          min_max: [1.5, 0.5], 
-          curve: [0.7, 0.7],
-        },
-        rotate: "natural",
-      };
-    }; */
-
     brush.noHatch();
     brush.noField();
     brush.noStroke();
