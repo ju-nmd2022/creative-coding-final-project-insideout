@@ -592,28 +592,6 @@ function App() {
           const indexTip = landmarks[8];
           const middleTip = landmarks[12];
 
-          const ctx = canvasRef.current.getContext("2d");
-
-          ctx.clearRect(
-            0,
-            0,
-            drawingCanvasRef.current.width,
-            drawingCanvasRef.current.height
-          );
-
-          ctx.beginPath();
-          ctx.arc(
-            drawingCanvasRef.current.width -
-              indexTip[0] * (drawingCanvasRef.current.width / video.videoWidth),
-            indexTip[1] * (drawingCanvasRef.current.height / video.videoHeight),
-            2,
-            0,
-            5
-          );
-          ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
-          ctx.fill();
-          ctx.closePath();
-
           const thumbIndexDistance = calculateFingerDistance(
             thumbTip,
             indexTip
