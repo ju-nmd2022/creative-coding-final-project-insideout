@@ -615,16 +615,16 @@ function App() {
           const landmarks = hand.landmarks;
           const thumbTip = landmarks[4];
           const indexTip = landmarks[8];
-          const middleTip = landmarks[12];
+          // const middleTip = landmarks[12];
 
           const thumbIndexDistance = calculateFingerDistance(
             thumbTip,
             indexTip
           );
-          const indexMiddleDistance = calculateFingerDistance(
-            indexTip,
-            middleTip
-          );
+          // const indexMiddleDistance = calculateFingerDistance(
+          //   indexTip,
+          //   middleTip
+          // );
           // if (thumbIndexDistance < 70 && indexMiddleDistance > 70) {
           if (thumbIndexDistance < 30) {
             const currentPos = {
