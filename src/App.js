@@ -31,7 +31,7 @@ function App() {
 
   useEffect(() => {
     runDetection();
-    // setupDrawingCanvas();
+    //setupDrawingCanvas();
   }, []);
 
   // const setupDrawingCanvas = () => {
@@ -78,21 +78,21 @@ function App() {
     return avg;
   };
 
-  const drawLine = (ctx, x1, y1, x2, y2) => {
-    ctx.beginPath();
-    ctx.moveTo(x1, y1);
-    ctx.lineTo(x2, y2);
-    ctx.stroke();
+  // const drawLine = (ctx, x1, y1, x2, y2) => {
+  //   ctx.beginPath();
+  //   ctx.moveTo(x1, y1);
+  //   ctx.lineTo(x2, y2);
+  //   ctx.stroke();
 
-    drawingHistory.current.push({
-      x1,
-      y1,
-      x2,
-      y2,
-      style: ctx.strokeStyle,
-      width: ctx.lineWidth,
-    });
-  };
+  //   drawingHistory.current.push({
+  //     x1,
+  //     y1,
+  //     x2,
+  //     y2,
+  //     style: ctx.strokeStyle,
+  //     width: ctx.lineWidth,
+  //   });
+  // };
 
   // const redrawHistory = () => {
   //   const ctx = drawingCanvasRef.current.getContext("2d");
@@ -380,12 +380,6 @@ function App() {
   let lastAnxietyTime = 0;
   const anxietyCooldown = 3000;
 
-  // let lastDisgustTime = 0;
-  // const disgustCooldown = 3000;
-
-  // let lastFearTime = 0;
-  // const fearCooldown = 3000;
-
   let lastEnvyTime = 0;
   const envyCooldown = 3000;
 
@@ -421,8 +415,6 @@ function App() {
         .detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
         .withFaceLandmarks()
         .withFaceExpressions();
-
-      //console.log("Face Detections:", detections.current);
 
       setFaceDetections(detections.current);
 
@@ -473,28 +465,6 @@ function App() {
         lastAnxietyTime = Date.now();
         lastTriggerTime = Date.now();
       }
-
-      // // Randomly trigger disgust
-      // if (
-      //   Math.random() < 0.3 &&
-      //   Date.now() - lastDisgustTime > disgustCooldown
-      // ) {
-      //   brush.pick("disgust");
-      //   setColor("#c9e165");
-      //   lastDisgustTime = Date.now();
-      //   lastTriggerTime = Date.now();
-      // }
-
-      // // Randomly trigger fear
-      // if (
-      //   Math.random() < 0.3 &&
-      //   Date.now() - lastFearTime > fearCooldown
-      // ) {
-      //   brush.pick("fear");
-      //   setColor("#c9e165");
-      //   lastFearTime = Date.now();
-      //   lastTriggerTime = Date.now();
-      // }
 
       // Randomly trigger envy
       if (Math.random() < 0.02 && Date.now() - lastEnvyTime > envyCooldown) {
@@ -601,7 +571,7 @@ function App() {
             middleTip
           );
 
-          if (thumbIndexDistance < 40 && indexMiddleDistance > 30) {
+          if (thumbIndexDistance < 50 && indexMiddleDistance > 50) {
             const currentPos = {
               x: p5.map(indexTip[0], 0, video.videoWidth, p5.width, 0),
               y: p5.map(indexTip[1], 0, video.videoHeight, 0, p5.height),
@@ -621,24 +591,54 @@ function App() {
               100,
               100
             );
-
-            // if (lastPos.current) {
-
-            // }
-            // lastPos.current = smoothedPos;
           }
         }
       }
     }
+  };
 
-    if (p5.mouseIsPressed) {
-      let x = p5.mouseX;
-      let y = p5.mouseY;
+  // Overlay to know where you are painting
+  const overlaySetup = (p5, canvasParentRef) => {
+    p5.createCanvas(p5.windowWidth * 0.9, p5.windowHeight * 0.9).parent(
+      canvasParentRef
+    );
+    p5.frameRate(60);
+  };
 
-      brush.bleed(p5.random(0.05, 0.4));
-      brush.fillTexture(0.55, 0.5);
-      brush.fill(color, p5.random(80, 140));
-      brush.rect(x, y, 100, 100);
+  const overlayDraw = async (p5) => {
+    if (
+      webcamRef.current &&
+      webcamRef.current.video.readyState === 4 &&
+      handsloaded
+    ) {
+      p5.clear();
+      // p5.translate(p5.width, 0);
+      // p5.scale(-1, 1);
+
+      const video = webcamRef.current.video;
+
+      const hands = await handposeNet.current.estimateHands(video);
+
+      if (hands.length > 0) {
+        const hand = hands[0];
+        const landmarks = hand.landmarks;
+        const indexTip = landmarks[8];
+
+        p5.noFill();
+        p5.stroke(0, 0, 0);
+        p5.strokeWeight(2);
+        p5.ellipse(
+          p5.map(indexTip[0], 0, video.videoWidth, p5.width, 0),
+          p5.map(indexTip[1], 0, video.videoHeight, 0, p5.height),
+          30
+        );
+      }
+    } else {
+      p5.background(0, 0, 0);
+      p5.textAlign(p5.CENTER);
+      p5.textSize(48);
+      p5.fill(255);
+      p5.text("Loading...", p5.width / 2, p5.height / 2);
     }
   };
 
@@ -657,7 +657,7 @@ function App() {
             zIndex: 9,
             width: 320,
             height: 240,
-            opacity: 0,
+            opacity: 1,
           }}
         />
 
@@ -688,11 +688,20 @@ function App() {
             zIndex: 10,
             width: "100vw",
             height: "100vh",
-            background: "transparent",
+            background: "white",
+            opacity: 0,
           }}
         />
 
         <Sketch setup={setup} draw={draw} />
+
+        <Sketch
+          setup={overlaySetup}
+          draw={overlayDraw}
+          style={{
+            position: "absolute",
+          }}
+        />
       </header>
     </div>
   );
