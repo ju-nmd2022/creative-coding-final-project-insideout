@@ -15,10 +15,6 @@ function App() {
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
   const drawingCanvasRef = useRef(null);
-  const [isDrawing, setIsDrawing] = useState(false);
-  const lastPos = useRef(null);
-  const drawingHistory = useRef([]);
-  const frameCount = useRef(0);
   const positionBuffer = useRef([]);
 
   const handposeNet = useRef(null);
@@ -30,8 +26,6 @@ function App() {
   const [sizeX, setSizeX] = useState(100);
   const [sizeY, setSizeY] = useState(100);
 
-  const [faceDetections, setFaceDetections] = useState([]);
-
   useEffect(() => {
     runDetection();
   }, []);
@@ -42,14 +36,6 @@ function App() {
     await faceapi.nets.faceExpressionNet.loadFromUri("/models");
 
     console.log("Face API models loaded.");
-  };
-
-  const calculate3DDistance = (point1, point2) => {
-    return Math.sqrt(
-      Math.pow(point1[0] - point2[0], 2) +
-      Math.pow(point1[1] - point2[1], 2) +
-      Math.pow(point1[2] - point2[2], 2)
-    );
   };
 
   const smoothPosition = (newPos) => {
@@ -93,7 +79,7 @@ function App() {
       p5.WEBGL
     ).parent(canvasParentRef);
     p5.background("#ffffff");
-    p5.frameRate(30);
+    p5.frameRate(60);
 
     const saveBtn = p5.createButton("Save Canvas");
     saveBtn.position(120, 75);
@@ -387,8 +373,6 @@ function App() {
         .detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
         .withFaceLandmarks()
         .withFaceExpressions();
-
-      setFaceDetections(detections.current);
 
       if (
         detections.current.length > 0 &&
