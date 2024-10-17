@@ -54,39 +54,9 @@ function App() {
   const calculate3DDistance = (point1, point2) => {
     return Math.sqrt(
       Math.pow(point1[0] - point2[0], 2) +
-      Math.pow(point1[1] - point2[1], 2) +
-      Math.pow(point1[2] - point2[2], 2)
+        Math.pow(point1[1] - point2[1], 2) +
+        Math.pow(point1[2] - point2[2], 2)
     );
-  };
-
-  const isHandFist = (landmarks) => {
-    const palmBase = landmarks[0];
-
-    const thumbTip = landmarks[4];
-    const indexTip = landmarks[8];
-    const middleTip = landmarks[12];
-    const ringTip = landmarks[16];
-    const pinkyTip = landmarks[20];
-
-    const thumbDistance = calculate3DDistance(thumbTip, palmBase);
-    const indexDistance = calculate3DDistance(indexTip, palmBase);
-    const middleDistance = calculate3DDistance(middleTip, palmBase);
-    const ringDistance = calculate3DDistance(ringTip, palmBase);
-    const pinkyDistance = calculate3DDistance(pinkyTip, palmBase);
-
-    const palmWidth = calculate3DDistance(landmarks[5], landmarks[17]);
-
-    const avgFingerDistance =
-      (thumbDistance +
-        indexDistance +
-        middleDistance +
-        ringDistance +
-        pinkyDistance) /
-      5;
-
-    const threshold = palmWidth * 1.2;
-
-    return avgFingerDistance < threshold;
   };
 
   const smoothPosition = (newPos) => {
@@ -124,102 +94,28 @@ function App() {
     });
   };
 
-  const redrawHistory = () => {
-    const ctx = drawingCanvasRef.current.getContext("2d");
-    ctx.clearRect(
-      0,
-      0,
-      drawingCanvasRef.current.width,
-      drawingCanvasRef.current.height
-    );
+  // const redrawHistory = () => {
+  //   const ctx = drawingCanvasRef.current.getContext("2d");
+  //   ctx.clearRect(
+  //     0,
+  //     0,
+  //     drawingCanvasRef.current.width,
+  //     drawingCanvasRef.current.height
+  //   );
 
-    drawingHistory.current.forEach((line) => {
-      ctx.strokeStyle = line.style;
-      ctx.lineWidth = line.width;
-      drawLine(ctx, line.x1, line.y1, line.x2, line.y2);
-    });
-  };
-
-  const drawPositionIndicator = (x, y) => {
-    redrawHistory();
-    const ctx = drawingCanvasRef.current.getContext("2d");
-    ctx.beginPath();
-    ctx.arc(x, y, 30, 0, 2 * Math.PI);
-    ctx.fillStyle = "red";
-    ctx.fill();
-    ctx.closePath();
-  };
+  //   drawingHistory.current.forEach((line) => {
+  //     ctx.strokeStyle = line.style;
+  //     ctx.lineWidth = line.width;
+  //     drawLine(ctx, line.x1, line.y1, line.x2, line.y2);
+  //   });
+  // };
 
   const calculateFingerDistance = (finger1, finger2) => {
     return Math.sqrt(
       Math.pow(finger1[0] - finger2[0], 2) +
-      Math.pow(finger1[1] - finger2[1], 2)
+        Math.pow(finger1[1] - finger2[1], 2)
     );
   };
-
-  // const detect = async (handposeNet) => {
-  //   frameCount.current += 1;
-
-  //   if (webcamRef.current && webcamRef.current.video.readyState === 4) {
-  //     const video = webcamRef.current.video;
-  //     const videoWidth = video.videoWidth;
-  //     const videoHeight = video.videoHeight;
-
-  //     canvasRef.current.width = videoWidth;
-  //     canvasRef.current.height = videoHeight;
-
-  //     if (drawingCanvasRef.current.width !== videoWidth) {
-  //       drawingCanvasRef.current.width = videoWidth;
-  //       drawingCanvasRef.current.height = videoHeight;
-  //     }
-
-  //     const drawingCtx = drawingCanvasRef.current.getContext("2d");
-  //     const ctx = canvasRef.current.getContext("2d");
-
-  //     // Normalize hand coordinates to canvas size
-  //     const hands = await handposeNet.current.estimateHands(video);
-  //     if (hands.length > 0) {
-  //       const hand = hands[0];
-  //       const landmarks = hand.landmarks;
-
-  //       // Assume indexTip is the tip of the finger for drawing
-  //       const indexTip = landmarks[8];
-  //       const normalizedX =
-  //         indexTip[0] * (drawingCanvasRef.current.width / videoWidth);
-  //       const normalizedY =
-  //         indexTip[1] * (drawingCanvasRef.current.height / videoHeight);
-
-  //       drawPositionIndicator(drawingCtx, normalizedX, normalizedY);
-
-  //       // Draw lines when the hand is in a fist position (for drawing)
-  //       if (isHandFist(landmarks)) {
-  //         const currentPos = { x: normalizedX, y: normalizedY };
-  //         const smoothedPos = smoothPosition(currentPos);
-
-  //         if (lastPos.current) {
-  //           drawLine(
-  //             drawingCtx,
-  //             lastPos.current.x,
-  //             lastPos.current.y,
-  //             smoothedPos.x,
-  //             smoothedPos.y
-  //           );
-  //         }
-
-  //         lastPos.current = smoothedPos;
-  //         setIsDrawing(true);
-  //       } else {
-  //         if (isDrawing) {
-  //           setTimeout(() => {
-  //             lastPos.current = null;
-  //             setIsDrawing(false);
-  //             positionBuffer.current = [];
-  //           }, 1);
-  //         }
-  //       }
-  //     }
-  //   }
-  // };
 
   // React-P5
   async function loadhands() {
@@ -230,14 +126,18 @@ function App() {
   }
 
   const setup = async (p5, canvasParentRef) => {
-    p5.createCanvas(p5.windowWidth * 0.9, p5.windowHeight * 0.9, p5.WEBGL).parent(canvasParentRef);
+    p5.createCanvas(
+      p5.windowWidth * 0.9,
+      p5.windowHeight * 0.9,
+      p5.WEBGL
+    ).parent(canvasParentRef);
     p5.background("#ffffff");
     p5.frameRate(60);
 
     const saveBtn = p5.createButton("Save Canvas");
     saveBtn.position(20, 20);
     saveBtn.mousePressed(() => {
-      p5.saveCanvas('canvas', 'png')
+      p5.saveCanvas("canvas", "png");
     });
 
     brush.instance(p5);
@@ -533,7 +433,7 @@ function App() {
           expressions.sad,
           expressions.angry,
           expressions.disgusted,
-          expressions.fearful
+          expressions.fearful,
         ];
 
         switch (availableEmotions.indexOf(Math.max(...availableEmotions))) {
@@ -597,10 +497,7 @@ function App() {
       // }
 
       // Randomly trigger envy
-      if (
-        Math.random() < 0.02 &&
-        Date.now() - lastEnvyTime > envyCooldown
-      ) {
+      if (Math.random() < 0.02 && Date.now() - lastEnvyTime > envyCooldown) {
         lastEnvyTime = Date.now();
         lastTriggerTime = Date.now();
       }
@@ -670,10 +567,7 @@ function App() {
       }
 
       // Randomly trigger shame
-      if (
-        Math.random() < 0.02 &&
-        Date.now() - lastShameTime > shameCooldown
-      ) {
+      if (Math.random() < 0.02 && Date.now() - lastShameTime > shameCooldown) {
         brush.pick("shame");
         setColor("#6c959f");
         lastShameTime = Date.now();
@@ -681,10 +575,7 @@ function App() {
       }
 
       // Randomly trigger greed
-      if (
-        Math.random() < 0.02 &&
-        Date.now() - lastGreedTime > greedCooldown
-      ) {
+      if (Math.random() < 0.02 && Date.now() - lastGreedTime > greedCooldown) {
         brush.pick("greed");
         setColor("#29c784");
         lastGreedTime = Date.now();
@@ -701,6 +592,28 @@ function App() {
           const indexTip = landmarks[8];
           const middleTip = landmarks[12];
 
+          const ctx = canvasRef.current.getContext("2d");
+
+          ctx.clearRect(
+            0,
+            0,
+            drawingCanvasRef.current.width,
+            drawingCanvasRef.current.height
+          );
+
+          ctx.beginPath();
+          ctx.arc(
+            drawingCanvasRef.current.width -
+              indexTip[0] * (drawingCanvasRef.current.width / video.videoWidth),
+            indexTip[1] * (drawingCanvasRef.current.height / video.videoHeight),
+            2,
+            0,
+            5
+          );
+          ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
+          ctx.fill();
+          ctx.closePath();
+
           const thumbIndexDistance = calculateFingerDistance(
             thumbTip,
             indexTip
@@ -709,13 +622,6 @@ function App() {
             indexTip,
             middleTip
           );
-
-          const ctx = drawingCanvasRef.current.getContext("2d");
-          ctx.beginPath();
-          ctx.arc(thumbTip.x, thumbTip.y, 30, 0, 2 * Math.PI);
-          ctx.fillStyle = "red";
-          ctx.fill();
-          ctx.closePath();
 
           if (thumbIndexDistance < 40 && indexMiddleDistance > 30) {
             const currentPos = {
