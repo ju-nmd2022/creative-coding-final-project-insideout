@@ -26,6 +26,7 @@ function App() {
   const [handsloaded, setHandsloaded] = useState(false);
   const [color, setColor] = useState("ffba59");
   const [emotion, setEmotion] = useState("Neutral");
+  const [systemEmotions, configureEmotions] = useState();
   const [sizeX, setSizeX] = useState(100);
   const [sizeY, setSizeY] = useState(100);
 
@@ -92,7 +93,7 @@ function App() {
       p5.WEBGL
     ).parent(canvasParentRef);
     p5.background("#ffffff");
-    p5.frameRate(60);
+    p5.frameRate(30);
 
     const saveBtn = p5.createButton("Save Canvas");
     saveBtn.position(120, 75);
@@ -332,42 +333,49 @@ function App() {
       },
       rotate: "natural",
     });
+
+    // System emotions
+    const system = {
+      anxiety: p5.random(0, 0.03),
+      envy: p5.random(0, 0.03),
+      embarassment: p5.random(0, 0.03),
+      boredom: p5.random(0, 0.03),
+      nostalgia: p5.random(0, 0.03),
+      sceptisism: p5.random(0, 0.03),
+      jealousy: p5.random(0, 0.03),
+      schadenfreude: p5.random(0, 0.03),
+      shame: p5.random(0, 0.03),
+      greed: p5.random(0, 0.03),
+    }
+
+    configureEmotions(system);
   };
 
   let lastTriggerTime = 0;
-  const triggerTime = 5000;
-
   let lastAnxietyTime = 0;
-  const anxietyCooldown = 3000;
-
   let lastEnvyTime = 0;
-  const envyCooldown = 3000;
-
   let lastEmbarassmentTime = 0;
-  const embarassmentCooldown = 3000;
-
   let lastBoredomTime = 0;
-  const boredomCooldown = 3000;
-
   let lastNostalgiaTime = 0;
-  const nostalgiaCooldown = 3000;
-
   let lastSceptisismTime = 0;
-  const sceptisismCooldown = 3000;
-
   let lastJealousyTime = 0;
-  const jealousyCooldown = 3000;
-
   let lastSchadenfreudeTime = 0;
-  const schadenfreudeCooldown = 3000;
-
   let lastShameTime = 0;
-  const shameCooldown = 3000;
-
   let lastGreedTime = 0;
-  const greedCooldown = 3000;
 
   const draw = async (p5) => {
+    const triggerTime = 5000;
+    const anxietyCooldown = 9000 - (systemEmotions.anxiety * 100000);
+    const envyCooldown = 9000 - (systemEmotions.envy * 100000);
+    const embarassmentCooldown = 9000 - (systemEmotions.embarassment * 100000);
+    const boredomCooldown = 9000 - (systemEmotions.boredom * 100000);
+    const nostalgiaCooldown = 9000 - (systemEmotions.nostalgia * 100000);
+    const sceptisismCooldown = 9000 - (systemEmotions.sceptisism * 100000);
+    const jealousyCooldown = 9000 - (systemEmotions.jealousy * 100000);
+    const schadenfreudeCooldown = 9000 - (systemEmotions.schadenfreude * 100000);
+    const shameCooldown = 9000 - (systemEmotions.shame * 100000);
+    const greedCooldown = 9000 - (systemEmotions.greed * 100000);
+
     if (p5.mouseIsPressed) {
       p5.saveCanvas('canvas', 'png');
     }
@@ -396,6 +404,7 @@ function App() {
           expressions.fearful,
         ];
 
+        // Get the face detected emotion with the highest value
         switch (availableEmotions.indexOf(Math.max(...availableEmotions))) {
           case 0:
             brush.pick("happy");
@@ -448,8 +457,8 @@ function App() {
       }
 
       // Randomly trigger the anxiety brush
-      else if (
-        Math.random() < 0.02 &&
+      if (
+        Math.random() < 0.01 + systemEmotions.anxiety &&
         Date.now() - lastAnxietyTime > anxietyCooldown
       ) {
         brush.pick("anxiety");
@@ -465,7 +474,7 @@ function App() {
 
       // Randomly trigger envy
       else if (
-        Math.random() < 0.02 &&
+        Math.random() < 0.01 + systemEmotions.envy &&
         Date.now() - lastEnvyTime > envyCooldown
       ) {
         brush.pick("envy");
@@ -481,7 +490,7 @@ function App() {
 
       // Randomly trigger embarassment
       else if (
-        Math.random() < 0.02 &&
+        Math.random() < 0.01 + systemEmotions.embarassment &&
         Date.now() - lastEmbarassmentTime > embarassmentCooldown
       ) {
         brush.pick("embarassment");
@@ -497,7 +506,7 @@ function App() {
 
       // Randomly trigger boredom
       else if (
-        Math.random() < 0.02 &&
+        Math.random() < 0.01 + systemEmotions.boredom &&
         Date.now() - lastBoredomTime > boredomCooldown
       ) {
         brush.pick("boredom");
@@ -513,7 +522,7 @@ function App() {
 
       // Randomly trigger nostalgia
       else if (
-        Math.random() < 0.02 &&
+        Math.random() < 0.01 + systemEmotions.nostalgia &&
         Date.now() - lastNostalgiaTime > nostalgiaCooldown
       ) {
         brush.pick("nostalgia");
@@ -529,7 +538,7 @@ function App() {
 
       // Randomly trigger sceptisism
       else if (
-        Math.random() < 0.02 &&
+        Math.random() < 0.01 + systemEmotions.sceptisism &&
         Date.now() - lastSceptisismTime > sceptisismCooldown
       ) {
         brush.pick("sceptisism");
@@ -545,7 +554,7 @@ function App() {
 
       // Randomly trigger jealousy
       else if (
-        Math.random() < 0.02 &&
+        Math.random() < 0.01 + systemEmotions.jealousy &&
         Date.now() - lastJealousyTime > jealousyCooldown
       ) {
         brush.pick("jealousy");
@@ -561,7 +570,7 @@ function App() {
 
       // Randomly trigger schadenfreude
       else if (
-        Math.random() < 0.02 &&
+        Math.random() < 0.01 + systemEmotions.schadenfreude &&
         Date.now() - lastSchadenfreudeTime > schadenfreudeCooldown
       ) {
         brush.pick("schadenfreude");
@@ -577,7 +586,7 @@ function App() {
 
       // Randomly trigger shame
       else if (
-        Math.random() < 0.02 &&
+        Math.random() < 0.01 + systemEmotions.shame &&
         Date.now() - lastShameTime > shameCooldown
       ) {
         brush.pick("shame");
@@ -593,7 +602,7 @@ function App() {
 
       // Randomly trigger greed
       else if (
-        Math.random() < 0.02 &&
+        Math.random() < 0.01 + systemEmotions.greed &&
         Date.now() - lastGreedTime > greedCooldown
       ) {
         brush.pick("greed");
@@ -615,17 +624,12 @@ function App() {
           const landmarks = hand.landmarks;
           const thumbTip = landmarks[4];
           const indexTip = landmarks[8];
-          // const middleTip = landmarks[12];
 
           const thumbIndexDistance = calculateFingerDistance(
             thumbTip,
             indexTip
           );
-          // const indexMiddleDistance = calculateFingerDistance(
-          //   indexTip,
-          //   middleTip
-          // );
-          // if (thumbIndexDistance < 70 && indexMiddleDistance > 70) {
+
           if (thumbIndexDistance < 30) {
             const currentPos = {
               x: p5.map(indexTip[0], 0, video.videoWidth, p5.width, 0),
@@ -665,8 +669,6 @@ function App() {
       handsloaded
     ) {
       p5.clear();
-      // p5.translate(p5.width, 0);
-      // p5.scale(-1, 1);
 
       const video = webcamRef.current.video;
 
@@ -678,9 +680,9 @@ function App() {
       p5.fill(0);
       p5.text("Currently feeling", p5.width - 50, 50);
       p5.stroke(0);
-      p5.strokeWeight(1);
+      p5.strokeWeight(2);
       p5.fill(color);
-      p5.text(emotion, p5.width - 50, 75);
+      p5.text(emotion, p5.width - 50, 80);
 
       if (hands.length > 0) {
         const hand = hands[0];
