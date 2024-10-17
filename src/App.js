@@ -428,7 +428,7 @@ function App() {
             break;
           case 4:
             brush.pick("fear");
-            setColor("#c9e165");
+            setColor("#8680c6");
             setEmotion("Fearful");
             setSizeX(p5.random(120, 160));
             setSizeY(40);
