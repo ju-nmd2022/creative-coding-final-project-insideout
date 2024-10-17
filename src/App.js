@@ -429,7 +429,7 @@ function App() {
             setColor("#c9e165");
             setEmotion("Disgusted");
             setSizeX(100);
-            setSizeY(p5.random(120, 150));
+            setSizeY(p5.random(120, 180));
             brush.bleed(p5.random(2, 0.4), "in");
             brush.fillTexture(0.55, 0.5);
             break;
@@ -437,8 +437,8 @@ function App() {
             brush.pick("fear");
             setColor("#c9e165");
             setEmotion("Fearful");
-            setSizeX(p5.random(50, 120));
-            setSizeY(70);
+            setSizeX(p5.random(120, 160));
+            setSizeY(40);
             brush.bleed(p5.random(0.4, 0.5), "in");
             brush.fillTexture(0.55, p5.random(0.8, 1));
             break;
@@ -455,8 +455,8 @@ function App() {
         brush.pick("anxiety");
         setColor("#f67122");
         setEmotion("Anxious");
-        setSizeX(100);
-        setSizeY(100);
+        setSizeX(140);
+        setSizeY(140);
         brush.bleed(p5.random(0.4, 0.5), "in");
         brush.fillTexture(0.55, p5.random(0.8, 1));
         lastAnxietyTime = Date.now();
@@ -471,8 +471,8 @@ function App() {
         brush.pick("envy");
         setColor("#8ead90");
         setEmotion("Envious");
-        setSizeX(p5.random(150, 200));
-        setSizeY(p5.random(150, 200));
+        setSizeX(p5.random(150, 250));
+        setSizeY(p5.random(150, 250));
         brush.bleed(p5.random(0.2, 0.5), "in");
         brush.fillTexture(0.55, 0.5);
         lastEnvyTime = Date.now();
@@ -626,7 +626,7 @@ function App() {
             middleTip
           );
           // if (thumbIndexDistance < 70 && indexMiddleDistance > 70) {
-          if (thumbIndexDistance < 50) {
+          if (thumbIndexDistance < 30) {
             const currentPos = {
               x: p5.map(indexTip[0], 0, video.videoWidth, p5.width, 0),
               y: p5.map(indexTip[1], 0, video.videoHeight, 0, p5.height),
