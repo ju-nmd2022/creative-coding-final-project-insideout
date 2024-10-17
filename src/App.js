@@ -558,7 +558,7 @@ function App() {
         Date.now() - lastSchadenfreudeTime > schadenfreudeCooldown
       ) {
         brush.pick("schadenfreude");
-        setColor("#a5cd98");
+        setColor("#cc964d");
         setEmotion("Schadenfreude");
         setSizeX(p5.random(100, 120));
         setSizeY(p5.random(100, 130));
